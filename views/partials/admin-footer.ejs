@@ -1,0 +1,31 @@
+</div> <!-- Fin du contenu principal -->
+</div> <!-- Fin du flex -->
+
+<script>
+  // Scripts pour le dashboard admin
+  document.addEventListener('DOMContentLoaded', function() {
+    // Confirmation pour les suppressions
+    const deleteButtons = document.querySelectorAll('[data-confirm-delete]');
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
+          e.preventDefault();
+        }
+      });
+    });
+    
+    // Gestion des formulaires
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+      form.addEventListener('submit', function() {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = 'En cours...';
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>

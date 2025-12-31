@@ -1,0 +1,207 @@
+<main class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+  <div class="container mx-auto px-4 py-12 md:py-24">
+    <div class="max-w-4xl mx-auto">
+      <!-- En-tête avec design minimal -->
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-red-50 to-orange-50 mb-6">
+          <svg class="w-10 h-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <%= title || 'Une erreur est survenue' %>
+        </h1>
+        <div class="w-24 h-1 bg-gradient-to-r from-red-500 to-orange-500 mx-auto rounded-full mb-6"></div>
+      </div>
+
+      <!-- Message d'erreur principal -->
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-10">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+          <div class="flex-shrink-0">
+            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-red-100 to-orange-100 flex items-center justify-center">
+              <svg class="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1 text-center md:text-left">
+            <h2 class="text-xl font-semibold text-gray-900 mb-3">Détails de l'erreur</h2>
+            <div class="prose prose-red max-w-none">
+              <p class="text-gray-700 text-lg leading-relaxed">
+                <%= error || 'Nous rencontrons actuellement des difficultés techniques. Notre équipe a été notifiée et travaille à résoudre le problème.' %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Solutions possibles -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
+          <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            Ce que vous pouvez faire
+          </h3>
+          <ul class="space-y-2 text-gray-600">
+            <li class="flex items-center">
+              <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              Recharger la page après quelques instants
+            </li>
+            <li class="flex items-center">
+              <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              Vérifier votre connexion internet
+            </li>
+            <li class="flex items-center">
+              <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              Effacer le cache de votre navigateur
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
+          <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+            <svg class="w-5 h-5 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            Aide supplémentaire
+          </h3>
+          <p class="text-gray-600 mb-4">
+            Si le problème persiste, notre équipe support est là pour vous aider.
+          </p>
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+            <a href="tel:+242000000000" class="text-green-700 font-medium hover:text-green-900">
+              Appeler le support technique
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions principales -->
+      <div class="text-center mb-12">
+        <h3 class="text-xl font-semibold text-gray-900 mb-6">Que souhaitez-vous faire ?</h3>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a 
+            href="/" 
+            class="group inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          >
+            <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            Retour à l'accueil
+          </a>
+          
+          <a 
+            href="javascript:history.back()" 
+            class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white text-gray-700 font-semibold rounded-xl border-2 border-gray-300 hover:border-blue-500 hover:text-blue-700 transition-all shadow-sm hover:shadow-md"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/>
+            </svg>
+            Page précédente
+          </a>
+          
+          <a 
+            href="/contact" 
+            class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Signaler l'erreur
+          </a>
+        </div>
+      </div>
+
+      <!-- Informations techniques (optionnel) -->
+      <% if (process.env.NODE_ENV === 'development' && typeof errorDetails !== 'undefined' && errorDetails) { %>
+        <div class="mt-12 border-t border-gray-200 pt-8">
+          <details class="bg-gray-50 rounded-lg p-4">
+            <summary class="text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900">
+              Informations techniques (développement)
+            </summary>
+            <pre class="mt-3 text-xs text-gray-600 overflow-auto bg-gray-900 text-gray-100 p-4 rounded-lg"><code><%= errorDetails %></code></pre>
+          </details>
+        </div>
+      <% } %>
+
+      <!-- Liens utiles -->
+      <div class="text-center mt-12 pt-8 border-t border-gray-200">
+        <p class="text-gray-500 text-sm mb-4">Navigation rapide</p>
+        <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+          <a href="/services" class="text-gray-600 hover:text-blue-600 text-sm font-medium">Nos services</a>
+          <a href="/about" class="text-gray-600 hover:text-blue-600 text-sm font-medium">À propos</a>
+          <a href="/projects" class="text-gray-600 hover:text-blue-600 text-sm font-medium">Projets</a>
+          <a href="/faq" class="text-gray-600 hover:text-blue-600 text-sm font-medium">FAQ</a>
+          <a href="/support" class="text-gray-600 hover:text-blue-600 text-sm font-medium">Support</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Script pour le rafraîchissement automatique -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Animation d'entrée
+    const mainElement = document.querySelector('main');
+    mainElement.style.opacity = '0';
+    mainElement.style.transform = 'translateY(10px)';
+    
+    setTimeout(() => {
+      mainElement.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      mainElement.style.opacity = '1';
+      mainElement.style.transform = 'translateY(0)';
+    }, 100);
+    
+    // Bouton de rafraîchissement
+    const refreshButton = document.createElement('button');
+    refreshButton.innerHTML = `
+      <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+      </svg>
+      Rafraîchir la page
+    `;
+    refreshButton.className = 'fixed bottom-4 right-4 z-50 inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow-lg hover:bg-blue-700 transition-colors opacity-0 translate-y-4';
+    
+    document.body.appendChild(refreshButton);
+    
+    setTimeout(() => {
+      refreshButton.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      refreshButton.style.opacity = '1';
+      refreshButton.style.transform = 'translateY(0)';
+    }, 1000);
+    
+    refreshButton.addEventListener('click', function() {
+      this.innerHTML = `
+        <svg class="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Rafraîchissement...
+      `;
+      setTimeout(() => location.reload(), 500);
+    });
+    
+    // Auto-rafraîchissement après 30 secondes (optionnel)
+    let autoRefreshTimer = setTimeout(() => {
+      if (confirm('Souhaitez-vous rafraîchir la page ? Le problème pourrait être résolu.')) {
+        location.reload();
+      }
+    }, 30000);
+    
+    // Nettoyer le timer si l'utilisateur interagit
+    document.addEventListener('click', () => {
+      clearTimeout(autoRefreshTimer);
+    });
+  });
+</script>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques - ENNO Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; }
+        .navbar { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .card { border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <a href="/admin" class="navbar-brand">
+                <i class="fas fa-arrow-left me-2"></i>
+                Retour Dashboard
+            </a>
+            <span class="text-white">
+                <i class="fas fa-user me-1"></i>
+                <%= admin.name %>
+            </span>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h2><i class="fas fa-chart-bar me-2"></i>Statistiques détaillées</h2>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-3 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                        <h4 class="text-primary">0</h4>
+                        <p class="text-muted">Visiteurs aujourd'hui</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-eye fa-2x text-success mb-2"></i>
+                        <h4 class="text-success">0</h4>
+                        <p class="text-muted">Pages vues</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-envelope fa-2x text-warning mb-2"></i>
+                        <h4 class="text-warning">0</h4>
+                        <p class="text-muted">Messages reçus</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-project-diagram fa-2x text-info mb-2"></i>
+                        <h4 class="text-info">0</h4>
+                        <p class="text-muted">Projets ajoutés</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Fonctionnalité en développement</h5>
+                    </div>
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                        <h5>Statistiques avancées</h5>
+                        <p class="text-muted">Les statistiques détaillées seront bientôt disponibles</p>
+                        <a href="/admin" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Retour au dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<section class="hero">
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-bolt"></i>
+        <span>Energies Nouvelles (ENNO) - Depuis 2008</span>
+      </div>
+      <h1 class="hero-title">
+        Solutions énergétiques <span class="highlight">durables</span> pour entreprises et particuliers au Congo
+      </h1>
+      <p class="hero-subtitle">
+        Bureau d'étude, travaux neufs et rénovations, contrôle et surveillance : nous sécurisons votre énergie avec des solutions sur mesure.
+      </p>
+      <div class="hero-actions">
+        <a href="/services" class="btn-primary">
+          <i class="fas fa-arrow-right"></i>
+          Découvrir nos services
+        </a>
+        <a href="/contact" class="btn-secondary">
+          <i class="fas fa-phone"></i>
+          Nous contacter
+        </a>
+      </div>
+      <% if (content && content.text) { %>
+        <div class="hero-note">
+          <i class="fas fa-info-circle"></i>
+          <%- content.text %>
+        </div>
+      <% } %>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-image-container">
+        <img src="/images/image 1.jpg" alt="ENNO - Solutions énergétiques" class="hero-image" loading="lazy" />
+        <div class="floating-elements">
+          <div class="floating-card card-1">
+            <i class="fas fa-solar-panel"></i>
+            <span>Solaire</span>
+          </div>
+          <div class="floating-card card-2">
+            <i class="fas fa-tools"></i>
+            <span>Maintenance</span>
+          </div>
+          <div class="floating-card card-3">
+            <i class="fas fa-chart-line"></i>
+            <span>Économies</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section features">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-badge">
+        <i class="fas fa-building"></i>
+        <span>Bâtiment et travaux publics</span>
+      </div>
+      <div class="feature-badge">
+        <i class="fas fa-industry"></i>
+        <span>Génie industriel</span>
+      </div>
+      <div class="feature-badge">
+        <i class="fas fa-bolt"></i>
+        <span>Réseaux électriques HTA/BTA</span>
+      </div>
+      <div class="feature-badge">
+        <i class="fas fa-solar-panel"></i>
+        <span>Énergie photovoltaïque</span>
+      </div>
+      <div class="feature-badge">
+        <i class="fas fa-tint"></i>
+        <span>Adduction d'eau potable</span>
+      </div>
+      <div class="feature-badge">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Formations diverses</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">2008</h3>
+          <p class="stat-label">année de création</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-thumbs-up"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">99%</h3>
+          <p class="stat-label">clients satisfaits</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">24/7</h3>
+          <p class="stat-label">support & dépannage</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-rocket"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">72h</h3>
+          <p class="stat-label">déploiement moyen</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section why-choose">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Pourquoi choisir ENNO ?</h2>
+      <p class="section-subtitle">Des solutions clés en main, du conseil à la maintenance.</p>
+    </div>
+    <div class="advantages-grid">
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <div class="advantage-content">
+          <h3>Expertise technique locale</h3>
+          <p>Nos ingénieurs maîtrisent les spécificités du terrain africain.</p>
+        </div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="advantage-content">
+          <h3>Solutions complètes clés en main</h3>
+          <p>De l'étude à la maintenance, nous gérons l'intégralité de votre projet.</p>
+        </div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <i class="fas fa-handshake"></i>
+        </div>
+        <div class="advantage-content">
+          <h3>Support réactif 24/7</h3>
+          <p>Une équipe dédiée pour vos urgences et un suivi personnalisé.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section services">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Nos services</h2>
+      <p class="section-subtitle">Une offre complète pour sécuriser et optimiser votre énergie.</p>
+    </div>
+    <div class="services-grid">
+      <% if (services && services.length) { %>
+        <% services.forEach((service, index) => { %>
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-<%= index % 4 === 0 ? 'plug' : index % 4 === 1 ? 'solar-panel' : index % 4 === 2 ? 'tools' : 'chart-line' %>"></i>
+            </div>
+            <div class="service-content">
+              <h3><%= service.title %></h3>
+              <p><%= service.description %></p>
+              <a href="/contact" class="service-link">
+                <span>Parler à un expert</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-plug"></i>
+          </div>
+          <div class="service-content">
+            <h3>Installation électrique</h3>
+            <p>Conception et installation pour maisons, bureaux et sites industriels.</p>
+            <a href="/contact" class="service-link">
+              <span>Parler à un expert</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-solar-panel"></i>
+          </div>
+          <div class="service-content">
+            <h3>Solaire & hybrides</h3>
+            <p>Panneaux solaires, onduleurs, stockage, solutions hybrides réseau/générateur.</p>
+            <a href="/contact" class="service-link">
+              <span>Parler à un expert</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-tools"></i>
+          </div>
+          <div class="service-content">
+            <h3>Maintenance & dépannage</h3>
+            <p>Visites préventives, astreinte 24/7 et réparations rapides.</p>
+            <a href="/contact" class="service-link">
+              <span>Parler à un expert</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="service-content">
+            <h3>Études & audits</h3>
+            <p>Analyse de vos besoins, dimensionnement, audits énergétiques et conseils.</p>
+            <a href="/contact" class="service-link">
+              <span>Parler à un expert</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section class="section cta">
+  <div class="container">
+    <div class="cta-card">
+      <div class="cta-content">
+        <div class="cta-icon">
+          <i class="fas fa-rocket"></i>
+        </div>
+        <h2 class="cta-title">Un projet ? Besoin d'un dépannage rapide ?</h2>
+        <p class="cta-subtitle">Contactez-nous pour une visite technique ou un devis détaillé.</p>
+        <ul class="cta-list">
+          <li>
+            <i class="fas fa-check"></i>
+            <span>Audit de site et dimensionnement</span>
+          </li>
+          <li>
+            <i class="fas fa-check"></i>
+            <span>Offre détaillée sous 48h</span>
+          </li>
+          <li>
+            <i class="fas fa-check"></i>
+            <span>Mise en service et support</span>
+          </li>
+        </ul>
+      </div>
+      <div class="cta-actions">
+        <a href="/contact" class="btn-cta">
+          <i class="fas fa-calendar-check"></i>
+          <span>Prendre rendez-vous</span>
+        </a>
+        <div class="cta-contact">
+          <p class="cta-phone">
+            <i class="fas fa-phone"></i>
+            <span>Contact : +242 04 412 16 50</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

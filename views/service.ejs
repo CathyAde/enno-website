@@ -1,0 +1,445 @@
+<div class="container">
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-cogs"></i>
+        <span>Nos Services</span>
+      </div>
+      <h1 class="hero-title">Solutions énergétiques <span class="highlight">complètes</span></h1>
+      <p class="hero-subtitle">
+        De l'installation électrique aux systèmes solaires, nous vous accompagnons dans tous vos projets énergétiques.
+      </p>
+    </div>
+  </div>
+
+  <% if (services && services.length > 0) { %>
+    <div class="services-grid">
+      <% services.forEach((service, index) => { %>
+        <div class="service-card">
+          <div class="service-header">
+            <div class="service-icon">
+              <i class="fas fa-<%= index % 4 === 0 ? 'plug' : index % 4 === 1 ? 'solar-panel' : index % 4 === 2 ? 'tools' : 'chart-line' %>"></i>
+            </div>
+            <div class="service-badge">Service <%= index + 1 %></div>
+          </div>
+          <div class="service-content">
+            <h3><%= service.title %></h3>
+            <p><%= service.description %></p>
+            <% if (service.category) { %>
+              <div class="service-category">
+                <i class="fas fa-tag"></i>
+                <span><%= service.category %></span>
+              </div>
+            <% } %>
+            <% if (service.duration) { %>
+              <div class="service-duration">
+                <i class="fas fa-clock"></i>
+                <span><%= service.duration %></span>
+              </div>
+            <% } %>
+          </div>
+          <div class="service-footer">
+            <a href="/contact?service=<%= encodeURIComponent(service.title) %>" class="service-btn">
+              <span>Demander un devis</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-tools"></i>
+      </div>
+      <h3>Services en préparation</h3>
+      <p>Nous finalisons nos offres de services. Contactez-nous pour plus d'informations.</p>
+      <a href="/contact" class="btn-primary">
+        <i class="fas fa-envelope"></i>
+        Nous contacter
+      </a>
+    </div>
+  <% } %>
+
+  <div class="process-section">
+    <div class="section-header">
+      <h2>Notre processus en 4 étapes</h2>
+      <p>Une approche méthodique pour garantir votre satisfaction</p>
+    </div>
+    <div class="process-grid">
+      <div class="process-step">
+        <div class="step-number">01</div>
+        <div class="step-content">
+          <h4>Audit & Analyse</h4>
+          <p>Évaluation complète de vos besoins énergétiques</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-number">02</div>
+        <div class="step-content">
+          <h4>Conception</h4>
+          <p>Planification détaillée et sélection des équipements</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-number">03</div>
+        <div class="step-content">
+          <h4>Installation</h4>
+          <p>Mise en œuvre par nos équipes certifiées</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-number">04</div>
+        <div class="step-content">
+          <h4>Maintenance</h4>
+          <p>Support continu et entretien préventif</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <div class="cta-content">
+      <h2>Prêt à démarrer votre projet ?</h2>
+      <p>Contactez nos experts pour un devis personnalisé et gratuit</p>
+      <div class="cta-features">
+        <div class="cta-feature">
+          <i class="fas fa-check"></i>
+          <span>Devis gratuit sous 48h</span>
+        </div>
+        <div class="cta-feature">
+          <i class="fas fa-check"></i>
+          <span>Visite technique incluse</span>
+        </div>
+        <div class="cta-feature">
+          <i class="fas fa-check"></i>
+          <span>Garantie sur tous nos travaux</span>
+        </div>
+      </div>
+      <div class="cta-actions">
+        <a href="/contact" class="btn-cta">
+          <i class="fas fa-calendar-check"></i>
+          <span>Prendre rendez-vous</span>
+        </a>
+        <a href="tel:+242066778518" class="btn-phone">
+          <i class="fas fa-phone"></i>
+          <span>+242 06 677 85 18</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Services Page Styles */
+.hero-section {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+  margin-bottom: 4rem;
+  border-radius: 20px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.highlight {
+  color: #fbbf24;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.service-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  border-top: 4px solid #3b82f6;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.service-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.service-badge {
+  background: #f0f9ff;
+  color: #0369a1;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.service-content h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.service-content p {
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.service-category, .service-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.service-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.service-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.service-btn:hover {
+  color: #1d4ed8;
+  transform: translateX(5px);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  margin-bottom: 4rem;
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  margin: 0 auto 2rem;
+}
+
+.empty-state h3 {
+  font-size: 1.8rem;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.process-section {
+  background: #f8fafc;
+  padding: 4rem 2rem;
+  border-radius: 20px;
+  margin-bottom: 4rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.section-header p {
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.process-step {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.step-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #3b82f6;
+  margin-bottom: 1rem;
+}
+
+.step-content h4 {
+  font-size: 1.2rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.step-content p {
+  color: #6b7280;
+}
+
+.cta-section {
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  color: white;
+  padding: 4rem 2rem;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.cta-content p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+.cta-features {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.cta-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cta-feature i {
+  color: #10b981;
+}
+
+.cta-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-cta, .btn-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-cta {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: #1f2937;
+}
+
+.btn-phone {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+
+.btn-cta:hover, .btn-phone:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .process-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cta-features {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+</style>

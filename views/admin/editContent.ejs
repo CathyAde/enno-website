@@ -1,0 +1,127 @@
+<%- include('../partials/admin-header', { title: (content && content.id) ? 'Modifier un contenu' : 'Nouveau contenu' }) %>
+
+<div class="container mx-auto px-4 py-6">
+  <div class="md:flex md:items-center md:justify-between mb-6">
+    <div class="flex-1 min-w-0">
+      <p class="eyebrow text-sm text-blue-600 font-semibold mb-1">Contenus</p>
+      <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+        <%= (content && content.id) ? 'Modifier le contenu' : 'Nouveau contenu' %>
+      </h1>
+      <p class="text-sm text-gray-600 mt-1">Page ou section : titre + texte (Markdown possible).</p>
+    </div>
+    <div class="mt-4 flex md:mt-0 md:ml-4 gap-2">
+      <a href="/admin/contents" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <i class="fas fa-arrow-left mr-2"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <% if (success) { %>
+    <div class="mb-4 p-3 bg-green-50 border border-green-100 text-green-800 rounded"><%= success %></div>
+  <% } %>
+  <% if (error) { %>
+    <div class="mb-4 p-3 bg-red-50 border border-red-100 text-red-800 rounded"><%= error %></div>
+  <% } %>
+
+  <div class="grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+      <div class="shadow sm:rounded-md sm:overflow-hidden bg-white border border-gray-100">
+        <form action="<%= (content && content.id) ? ('/admin/contents/update/' + content.id) : '/admin/contents' %>" method="POST">
+          <div class="px-4 py-5 space-y-6 sm:p-6">
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div class="sm:col-span-3">
+                <label for="type" class="block text-sm font-medium text-gray-700">Type de contenu</label>
+                <select id="type" name="type" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                  <option value="page" <%= (content && (content.type === 'page' || content.page)) ? 'selected' : '' %>>Page</option>
+                  <option value="section" <%= (content && (content.type === 'section' || content.section)) ? 'selected' : '' %>>Section</option>
+                </select>
+              </div>
+
+              <div id="pageField" class="sm:col-span-3" style="<%= (content && content.section) ? 'display: none;' : '' %>">
+                <label for="page" class="block text-sm font-medium text-gray-700">Page (slug)</label>
+                <input type="text" name="page" id="page" value="<%= content ? content.page : (typeof page !== 'undefined' ? page : '') %>" 
+                  class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="ex: about, services, accueil">
+              </div>
+
+              <div id="sectionField" class="sm:col-span-3" style="<%= (content && content.page) ? 'display: none;' : '' %>">
+                <label for="section" class="block text-sm font-medium text-gray-700">Section</label>
+                <input type="text" name="section" id="section" value="<%= content ? content.section : '' %>" 
+                  class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="ex: hero, footer, bloc-1">
+              </div>
+            </div>
+
+            <div>
+              <label for="title" class="block text-sm font-medium text-gray-700">Titre *</label>
+              <input type="text" name="title" id="title" required value="<%= content ? content.title : '' %>" 
+                class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Titre affiché dans la page">
+            </div>
+
+            <div>
+              <label for="text" class="block text-sm font-medium text-gray-700">Contenu *</label>
+              <div class="mt-1">
+                <textarea id="text" name="text" rows="12" required
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"><%= content ? content.text : '' %></textarea>
+              </div>
+              <p class="mt-2 text-sm text-gray-500">Markdown supporté (titres, listes, liens).</p>
+            </div>
+          </div>
+          <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+            <a href="/admin/dashboard" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Annuler
+            </a>
+            <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <aside class="bg-white shadow rounded-lg p-5 space-y-4 border border-gray-100 sticky top-4 h-fit">
+      <h3 class="text-sm font-semibold text-gray-800">Bonnes pratiques</h3>
+      <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside">
+        <li>Slug page unique (ex: about, services, accueil).</li>
+        <li>Section : nom court (hero, bloc-1) pour cibler une zone.</li>
+        <li>Markdown : titres, listes, liens, gras/italique.</li>
+        <li>Tester l’affichage après sauvegarde.</li>
+      </ul>
+      <div class="p-3 bg-blue-50 border border-blue-100 rounded text-xs text-blue-800">
+        Astuce : laissez vide “section” si vous renseignez “page” (et inversement) pour éviter les doublons.
+      </div>
+      <div class="p-3 bg-gray-50 border border-gray-100 rounded text-xs text-gray-700">
+        Besoin d’une section hero ? Nommez-la “hero” et gardez “page” vide.
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const typeEl = document.getElementById('type');
+    const pageField = document.getElementById('pageField');
+    const sectionField = document.getElementById('sectionField');
+    const pageInput = document.getElementById('page');
+    const sectionInput = document.getElementById('section');
+
+    function toggleFields() {
+      const type = typeEl ? typeEl.value : 'page';
+      if (type === 'page') {
+        if (pageField) pageField.style.display = 'block';
+        if (sectionField) sectionField.style.display = 'none';
+        if (sectionInput) sectionInput.value = '';
+      } else {
+        if (pageField) pageField.style.display = 'none';
+        if (sectionField) sectionField.style.display = 'block';
+        if (pageInput) pageInput.value = '';
+      }
+    }
+
+    if (typeEl) {
+      typeEl.addEventListener('change', toggleFields);
+      document.addEventListener('DOMContentLoaded', toggleFields);
+    }
+  })();
+</script>
+
+<%- include('../partials/admin-footer') %>
+<%- include('../partials/admin-footer') %>

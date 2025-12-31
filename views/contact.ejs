@@ -1,0 +1,509 @@
+<div class="container">
+  <div class="contact-hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-envelope"></i>
+        <span>Contactez-nous</span>
+      </div>
+      <h1 class="hero-title">Parlons de votre <span class="highlight">projet</span></h1>
+      <p class="hero-subtitle">
+        Que ce soit pour un devis, une visite technique ou une question, notre équipe est là pour vous accompagner.
+      </p>
+    </div>
+  </div>
+
+  <div class="contact-content">
+    <div class="contact-info">
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="fas fa-phone"></i>
+        </div>
+        <div class="info-content">
+          <h3>Téléphone</h3>
+          <p><a href="tel:+242066778518">+242 06 677 85 18</a></p>
+          <span class="info-note">Disponible 24/7 pour les urgences</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="info-content">
+          <h3>Email</h3>
+          <p><a href="mailto:contact@enno-af.com">contact@enno-af.com</a></p>
+          <span class="info-note">Réponse sous 24h</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div class="info-content">
+          <h3>Zone d'intervention</h3>
+          <p>Brazzaville et environs</p>
+          <span class="info-note">Déplacements possibles sur demande</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="info-content">
+          <h3>Horaires</h3>
+          <p>Lun-Sam : 8h00 - 19h00</p>
+          <span class="info-note">Dimanche sur rendez-vous</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-section">
+      <div class="form-header">
+        <h2>Envoyez-nous un message</h2>
+        <p>Remplissez le formulaire ci-dessous et nous vous recontacterons rapidement</p>
+      </div>
+
+      <% if (success) { %>
+        <div class="alert alert-success">
+          <i class="fas fa-check-circle"></i>
+          <span><%= success %></span>
+        </div>
+      <% } %>
+
+      <% if (error) { %>
+        <div class="alert alert-error">
+          <i class="fas fa-exclamation-circle"></i>
+          <span><%= error %></span>
+        </div>
+      <% } %>
+
+      <form class="contact-form" method="POST" action="/contact">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">
+              <i class="fas fa-user"></i>
+              Nom complet *
+            </label>
+            <input 
+              type="text" 
+              id="name" 
+              name="name" 
+              placeholder="Votre nom complet"
+              value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>"
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label for="email">
+              <i class="fas fa-envelope"></i>
+              Email *
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              placeholder="votre@email.com"
+              value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">
+              <i class="fas fa-phone"></i>
+              Téléphone
+            </label>
+            <input 
+              type="tel" 
+              id="phone" 
+              name="phone" 
+              placeholder="+242 XX XX XX XX"
+              value="<%= typeof formData !== 'undefined' ? formData.phone || '' : '' %>"
+            >
+          </div>
+          <div class="form-group">
+            <label for="subject">
+              <i class="fas fa-tag"></i>
+              Sujet
+            </label>
+            <select id="subject" name="subject">
+              <option value="">Sélectionnez un sujet</option>
+              <option value="Installation électrique" <%= typeof formData !== 'undefined' && formData.subject === 'Installation électrique' ? 'selected' : '' %>>Installation électrique</option>
+              <option value="Système solaire" <%= typeof formData !== 'undefined' && formData.subject === 'Système solaire' ? 'selected' : '' %>>Système solaire</option>
+              <option value="Maintenance" <%= typeof formData !== 'undefined' && formData.subject === 'Maintenance' ? 'selected' : '' %>>Maintenance</option>
+              <option value="Dépannage urgent" <%= typeof formData !== 'undefined' && formData.subject === 'Dépannage urgent' ? 'selected' : '' %>>Dépannage urgent</option>
+              <option value="Devis" <%= typeof formData !== 'undefined' && formData.subject === 'Devis' ? 'selected' : '' %>>Demande de devis</option>
+              <option value="Autre" <%= typeof formData !== 'undefined' && formData.subject === 'Autre' ? 'selected' : '' %>>Autre</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="message">
+            <i class="fas fa-comment"></i>
+            Message *
+          </label>
+          <textarea 
+            id="message" 
+            name="message" 
+            rows="6" 
+            placeholder="Décrivez votre projet ou votre besoin en détail..."
+            required
+          ><%= typeof formData !== 'undefined' ? formData.message || '' : '' %></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-paper-plane"></i>
+          <span>Envoyer le message</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="services-preview">
+    <div class="section-header">
+      <h2>Nos services principaux</h2>
+      <p>Découvrez comment nous pouvons vous aider</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-preview">
+        <div class="service-icon">
+          <i class="fas fa-plug"></i>
+        </div>
+        <h3>Installation électrique</h3>
+        <p>Conception et installation complète pour tous types de bâtiments</p>
+      </div>
+      <div class="service-preview">
+        <div class="service-icon">
+          <i class="fas fa-solar-panel"></i>
+        </div>
+        <h3>Énergie solaire</h3>
+        <p>Solutions photovoltaïques et systèmes hybrides sur mesure</p>
+      </div>
+      <div class="service-preview">
+        <div class="service-icon">
+          <i class="fas fa-tools"></i>
+        </div>
+        <h3>Maintenance</h3>
+        <p>Entretien préventif et dépannage 24/7 de vos installations</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Contact Page Styles */
+.contact-hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+  margin-bottom: 4rem;
+  border-radius: 20px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.highlight {
+  color: #fbbf24;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.info-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.info-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.info-content p {
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.info-content a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.info-content a:hover {
+  color: #1d4ed8;
+}
+
+.info-note {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.contact-form-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-header h2 {
+  font-size: 1.8rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.form-header p {
+  color: #6b7280;
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.alert-success {
+  background: #d1fae5;
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+.alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border-left: 4px solid #ef4444;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.services-preview {
+  background: #f8fafc;
+  padding: 4rem 2rem;
+  border-radius: 20px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.section-header p {
+  color: #6b7280;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.service-preview {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.service-preview:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.service-preview .service-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  margin: 0 auto 1rem;
+}
+
+.service-preview h3 {
+  font-size: 1.2rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.service-preview p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .contact-form-section {
+    padding: 1.5rem;
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
