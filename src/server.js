@@ -74,12 +74,28 @@ app.get('/init', async (req, res) => {
     const { sequelize, ContactMessage } = require('./models/index');
     
     await sequelize.sync({ force: false });
+    
+    // Créer un message de test
+    await ContactMessage.create({
+      name: 'Test User',
+      email: 'test@example.com',
+      phone: '+242123456789',
+      subject: 'Message de test',
+      message: 'Ceci est un message de test pour vérifier le système.',
+      status: 'unread'
+    });
+    
     const messageCount = await ContactMessage.count();
+    const messages = await ContactMessage.findAll({ limit: 3 });
     
     res.send(`
       <h1>✅ ENNO Initialisé</h1>
       <p>Base synchronisée</p>
       <p>Messages: ${messageCount}</p>
+      <h3>Messages récents:</h3>
+      <ul>
+        ${messages.map(m => `<li>${m.name}: ${m.subject}</li>`).join('')}
+      </ul>
       <p>Heure: ${new Date().toISOString()}</p>
       <a href="/admin/login">Admin</a> | <a href="/">Accueil</a>
     `);
