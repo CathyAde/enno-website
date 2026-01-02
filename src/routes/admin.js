@@ -47,11 +47,26 @@ router.delete('/messages/:id', adminController.deleteMessage);
 // -----------------
 // Gestion des contenus par page
 // -----------------
-router.get('/contents/accueil', contentController.editPageContent);
+router.get('/contents/accueil', (req, res) => {
+  if (!req.session?.user) {
+    return res.redirect('/admin/login');
+  }
+  contentController.editPageContent(req, res);
+});
 
-router.get('/contents/services', contentController.editPageContent);
+router.get('/contents/services', (req, res) => {
+  if (!req.session?.user) {
+    return res.redirect('/admin/login');
+  }
+  contentController.editPageContent(req, res);
+});
 
-router.get('/contents/apropos', contentController.editPageContent);
+router.get('/contents/apropos', (req, res) => {
+  if (!req.session?.user) {
+    return res.redirect('/admin/login');
+  }
+  contentController.editPageContent(req, res);
+});
 
 router.post('/contents/:page', contentController.uploadImage, contentController.updatePageContent);
 

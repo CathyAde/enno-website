@@ -1,15 +1,17 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
-const pgSession = require('connect-pg-simple')(session);
 const expressLayouts = require('express-ejs-layouts');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Importer Sequelize
-const { sequelize } = require('./models/index');
-const trackVisitor = require('./middlewares/trackVisitor');
+// Configuration pour Render
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+// Importer les middlewares
 const flash = require('./middlewares/flash');
 
 // Middleware pour parser
@@ -18,12 +20,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Sessions simples
 app.use(session({
-  secret: 'enno-admin-secret-key-change-this',
+  secret: process.env.SESSION_SECRET || 'enno-admin-secret-key-change-this',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,
-    maxAge: 24 * 60 * 60 * 1000
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true
   }
 }));
 
@@ -36,9 +39,6 @@ app.use((req, res, next) => {
   res.locals.user = req.session?.user;
   next();
 });
-
-// Tracking des visiteurs (désactivé temporairement)
-// app.use(trackVisitor);
 
 // Fichiers statiques - DOIT être avant les routes
 app.use('/images', express.static(path.join(__dirname, '../public/images')));

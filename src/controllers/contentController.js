@@ -284,10 +284,10 @@ exports.editPageContent = async (req, res) => {
     }
 
     res.render('admin/contents', {
-      title: `Gestion - ${page}`,
+      title: `Gestion - ${page.charAt(0).toUpperCase() + page.slice(1)}`,
       page,
       content: content ? content.get({ plain: true }) : null,
-      admin: req.session.user,
+      admin: req.session.user || { name: 'Admin' },
       layout: false
     });
   } catch (err) {

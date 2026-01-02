@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: enno-website
+    env: node
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: node src/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000

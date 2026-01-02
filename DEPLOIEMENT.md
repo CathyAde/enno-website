@@ -267,3 +267,53 @@ En cas de problème :
 2. Vérifier Nginx : `sudo nginx -t`
 3. Vérifier PostgreSQL : `sudo systemctl status postgresql`
 4. Redémarrer les services si nécessaire
+
+---
+
+## Option 4: Render (Simple et Gratuit)
+
+### 1. Préparer le repository
+```bash
+# Pousser le code sur GitHub
+git add .
+git commit -m "Deploy to Render"
+git push origin main
+```
+
+### 2. Configurer sur Render
+1. Aller sur [render.com](https://render.com)
+2. Connecter votre compte GitHub
+3. Créer un nouveau **Web Service**
+4. Sélectionner votre repository `enno-website`
+
+### 3. Configuration du service
+```
+Name: enno-website
+Environment: Node
+Build Command: chmod +x build.sh && ./build.sh
+Start Command: node src/server.js
+```
+
+### 4. Variables d'environnement
+Ajouter dans Render Dashboard > Environment:
+```
+NODE_ENV=production
+SESSION_SECRET=votre-cle-secrete-forte
+DATABASE_URL=postgresql://... (fourni par Render)
+```
+
+### 5. Ajouter PostgreSQL
+1. Dans Render Dashboard, créer une **PostgreSQL Database**
+2. Copier l'URL de connexion
+3. L'ajouter comme `DATABASE_URL` dans les variables d'environnement
+
+### 6. Déployer
+- Render déploie automatiquement à chaque push sur `main`
+- URL: `https://votre-app.onrender.com`
+
+### ⚠️ Problèmes courants Render:
+- **Sessions perdues**: Cookies sécurisés requis en HTTPS
+- **Base non initialisée**: Le script `build.sh` résout cela
+- **Images perdues**: Render efface les fichiers uploadés au redémarrage
+
+---
