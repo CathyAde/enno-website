@@ -90,8 +90,57 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Démarrage serveur simple
-app.listen(PORT, () => {
+// Démarrage serveur avec initialisation DB
+app.listen(PORT, async () => {
   console.log(`🚀 ENNO lancé sur http://localhost:${PORT}`);
   console.log(`📱 Admin: http://localhost:${PORT}/admin/login`);
+  
+  // Initialiser la base de données
+  try {
+    const { sequelize, Admin, Content } = require('./models/index');
+    const bcrypt = require('bcrypt');
+    
+    console.log('🔄 Synchronisation de la base de données...');
+    await sequelize.sync({ force: false });
+    console.log('✅ Base de données synchronisée');
+    
+    // Créer admin par défaut
+    const adminExists = await Admin.findOne({ where: { email: 'admin@enno.com' } });
+    if (!adminExists) {
+      const hashedPassword = await bcrypt.hash('admin123', 10);
+      await Admin.create({
+        name: 'Admin ENNO',
+        email: 'admin@enno.com',
+        password: hashedPassword
+      });
+      console.log('✅ Admin créé: admin@enno.com / admin123');
+    }
+    
+    // Créer contenu par défaut
+    await Content.upsert({
+      page: 'accueil',
+      title: 'ENNO - Solutions Énergétiques',
+      subtitle: 'Votre partenaire en énergie depuis 2008',
+      text: 'ENNO accompagne les entreprises et particuliers dans leurs projets énergétiques avec expertise et professionnalisme.'
+    });
+    
+    await Content.upsert({
+      page: 'services',
+      title: 'Nos Services',
+      subtitle: 'Des solutions complètes pour tous vos besoins',
+      text: 'Installation solaire, maintenance, études techniques et accompagnement personnalisé.'
+    });
+    
+    await Content.upsert({
+      page: 'apropos',
+      title: 'À propos d\'ENNO',
+      subtitle: 'Une entreprise engagée pour l\'avenir énergétique',
+      text: 'Fondée en 2008, ENNO est spécialisée dans les solutions énergétiques durables en République du Congo.'
+    });
+    
+    console.log('✅ Contenu par défaut créé');
+    console.log('🎉 Initialisation terminée');
+  } catch (error) {
+    console.error('❌ Erreur initialisation:', error.message);
+  }
 });
