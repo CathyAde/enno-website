@@ -1,31 +1,24 @@
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
-// On force le mot de passe en string pour éviter l'erreur SASL
-const { Sequelize } = require('sequelize');
-
+// Configuration pour Railway
 const sequelize = new Sequelize(
-  process.env.PGDATABASE,
-  process.env.PGUSER,
-  process.env.PGPASSWORD,
+  process.env.PGDATABASE || process.env.DB_NAME,
+  process.env.PGUSER || process.env.DB_USER,
+  process.env.PGPASSWORD || process.env.DB_PASS,
   {
-    host: process.env.PGHOST,
-    port: process.env.PGPORT,
+    host: process.env.PGHOST || process.env.DB_HOST,
+    port: process.env.PGPORT || process.env.DB_PORT || 5432,
     dialect: 'postgres',
     logging: false,
     dialectOptions: {
-      ssl: {
+      ssl: process.env.NODE_ENV === 'production' ? {
         require: true,
         rejectUnauthorized: false
-      }
+      } : false
     }
   }
 );
-
-module.exports = {
-  sequelize,
-  Sequelize
-};
 
 const testConnection = async () => {
   try {
