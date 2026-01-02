@@ -238,46 +238,32 @@ router.get('/test-db', async (req, res) => {
   }
 });
 
-// Route pour forcer la synchronisation (à supprimer après test)
-router.get('/force-sync', async (req, res) => {
+// Route simple pour tester
+router.get('/init', async (req, res) => {
   try {
-    const { sequelize, Admin, Content, ContactMessage } = require('../models/index');
-    const bcrypt = require('bcrypt');
+    console.log('🔄 Initialisation demandée via /init');
     
-    console.log('🔄 Force sync demandée...');
+    const { sequelize, Admin, ContactMessage } = require('../models/index');
     
-    // Synchroniser toutes les tables
+    // Synchroniser
     await sequelize.sync({ force: false });
-    console.log('✅ Tables synchronisées');
     
-    // Créer admin si inexistant
-    const adminExists = await Admin.findOne({ where: { email: 'admin@enno.com' } });
-    if (!adminExists) {
-      const hashedPassword = await bcrypt.hash('admin123', 10);
-      await Admin.create({
-        name: 'Admin ENNO',
-        email: 'admin@enno.com',
-        password: hashedPassword
-      });
-      console.log('✅ Admin créé');
-    }
-    
-    // Vérifier les messages
+    // Compter les messages
     const messageCount = await ContactMessage.count();
-    console.log(`📊 Messages en base: ${messageCount}`);
     
-    res.json({
-      success: true,
-      message: 'Synchronisation forcée terminée',
-      messageCount,
-      adminExists: !!adminExists
-    });
+    res.send(`
+      <h1>Initialisation ENNO</h1>
+      <p>Base synchronisée ✅</p>
+      <p>Messages en base: ${messageCount}</p>
+      <p>Timestamp: ${new Date().toISOString()}</p>
+      <a href="/admin/login">Aller à l'admin</a>
+    `);
   } catch (error) {
-    console.error('❌ Erreur force sync:', error);
-    res.json({
-      success: false,
-      error: error.message
-    });
+    res.send(`
+      <h1>Erreur Initialisation</h1>
+      <p>Erreur: ${error.message}</p>
+      <pre>${error.stack}</pre>
+    `);
   }
 });
 
