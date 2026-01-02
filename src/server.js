@@ -149,6 +149,29 @@ app.listen(PORT, async () => {
     const { sequelize, Admin, Content } = require('./models/index');
     const bcrypt = require('bcrypt');
     
+    sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('✅ Base synchronisée (Railway)');
+  })
+  .catch(err => {
+    console.error('❌ Erreur sync DB:', err);
+  });
+
+// middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// routes
+const mainRoutes = require('./routes/main');
+app.use('/', mainRoutes);
+
+// serveur
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
+});
+
+
     console.log('🔄 Synchronisation de la base de données...');
     await sequelize.sync({ force: false });
     console.log('✅ Base de données synchronisée');
