@@ -101,9 +101,12 @@ exports.dashboard = async (req, res) => {
           limit: 5 
         });
         console.log(`Messages trouvés: ${messagesCount}, Non lus: ${unreadMessages}`);
+        console.log('Recent messages:', recentMessages.map(m => ({ name: m.name, subject: m.subject })));
+      } else {
+        console.log('ContactMessage model not available');
       }
     } catch (e) { 
-      console.log('ContactMessage non disponible:', e.message); 
+      console.log('ContactMessage error:', e.message); 
     }
 
     try {
@@ -178,9 +181,12 @@ exports.listMessages = async (req, res) => {
         messages = await ContactMessage.findAll({
           order: [['createdAt', 'DESC']]
         });
+        console.log(`Messages dans listMessages: ${messages.length}`);
+      } else {
+        console.log('ContactMessage model not available in listMessages');
       }
     } catch (dbError) {
-      console.log('Base de données non disponible pour les messages');
+      console.log('Erreur DB dans listMessages:', dbError.message);
     }
 
     res.render('admin/messages', {
