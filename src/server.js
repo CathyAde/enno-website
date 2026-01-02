@@ -59,6 +59,39 @@ app.use((req, res, next) => {
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
+// Route simple de test
+app.get('/status', (req, res) => {
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+    database: !!process.env.DATABASE_URL
+  });
+});
+app.get('/init', async (req, res) => {
+  try {
+    console.log('🔄 Route /init appelée');
+    const { sequelize, ContactMessage } = require('./models/index');
+    
+    await sequelize.sync({ force: false });
+    const messageCount = await ContactMessage.count();
+    
+    res.send(`
+      <h1>✅ ENNO Initialisé</h1>
+      <p>Base synchronisée</p>
+      <p>Messages: ${messageCount}</p>
+      <p>Heure: ${new Date().toISOString()}</p>
+      <a href="/admin/login">Admin</a> | <a href="/">Accueil</a>
+    `);
+  } catch (error) {
+    res.send(`
+      <h1>❌ Erreur</h1>
+      <p>${error.message}</p>
+      <pre>${error.stack}</pre>
+    `);
+  }
+});
+
 
 
 // Routes - ORDRE IMPORTANT
