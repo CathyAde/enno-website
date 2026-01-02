@@ -59,6 +59,57 @@ app.use((req, res, next) => {
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
+// Route simple de test
+app.get('/status', (req, res) => {
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+    database: !!process.env.DATABASE_URL
+  });
+});
+app.get('/init', async (req, res) => {
+  try {
+    console.log('🔄 Route /init appelée');
+    const { sequelize, ContactMessage } = require('./models/index');
+    
+    await sequelize.sync({ force: false });
+    
+    // Créer un message de test
+    await ContactMessage.create({
+      name: 'Test User',
+      email: 'test@example.com',
+      phone: '+242123456789',
+      subject: 'Message de test',
+      message: 'Ceci est un message de test pour vérifier le système.',
+      status: 'unread'
+    });
+    
+    const messageCount = await ContactMessage.count();
+    const messages = await ContactMessage.findAll({ limit: 3 });
+    
+    res.send(`
+      <h1>✅ ENNO Initialisé</h1>
+      <p>Base synchronisée</p>
+      <p>Messages: ${messageCount}</p>
+      <h3>Messages récents:</h3>
+      <ul>
+        ${messages.map(m => `<li>${m.name}: ${m.subject}</li>`).join('')}
+      </ul>
+      <p>Heure: ${new Date().toISOString()}</p>
+      <a href="/admin/login">Admin</a> | <a href="/">Accueil</a>
+    `);
+  } catch (error) {
+    res.send(`
+      <h1>❌ Erreur</h1>
+      <p>${error.message}</p>
+      <pre>${error.stack}</pre>
+    `);
+  }
+});
+
+
+
 // Routes - ORDRE IMPORTANT
 const mainRoutes = require('./routes/main');
 
@@ -95,9 +146,32 @@ app.listen(PORT, async () => {
   
   // Initialiser la base de données
   try {
-    const { sequelize, Admin, Content } = require('./models/index');
-    const bcrypt = require('bcrypt');
-    
+    const { sequelize } = require('./models');
+
+sequelize.sync()
+  .then(() => {
+    console.log('✅ Tables synchronisées (PostgreSQL)');
+  })
+  .catch(err => {
+    console.error('❌ Erreur DB:', err);
+  });
+
+
+// middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// routes
+const mainRoutes = require('./routes/main');
+app.use('/', mainRoutes);
+
+// serveur
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
+});
+
+
     console.log('🔄 Synchronisation de la base de données...');
     await sequelize.sync({ force: false });
     console.log('✅ Base de données synchronisée');
