@@ -59,6 +59,57 @@ app.use((req, res, next) => {
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
+// Route de debug pour Railway
+app.get('/debug-messages', async (req, res) => {
+  try {
+    const { ContactMessage, sequelize } = require('./models/index');
+    
+    // Forcer la synchronisation
+    await sequelize.sync({ force: false });
+    
+    // Créer un message de test
+    const testMessage = await ContactMessage.create({
+      name: 'Test Railway',
+      email: 'test@railway.com',
+      phone: '+242000000000',
+      subject: 'Test message Railway',
+      message: 'Message de test pour vérifier Railway',
+      status: 'unread'
+    });
+    
+    // Compter tous les messages
+    const totalMessages = await ContactMessage.count();
+    const allMessages = await ContactMessage.findAll({
+      order: [['createdAt', 'DESC']],
+      limit: 10
+    });
+    
+    res.send(`
+      <h1>🚆 Railway Debug</h1>
+      <p><strong>Total messages:</strong> ${totalMessages}</p>
+      <p><strong>Message test créé:</strong> ID ${testMessage.id}</p>
+      <h3>Tous les messages:</h3>
+      <ul>
+        ${allMessages.map(m => `
+          <li>
+            <strong>${m.name}</strong> (${m.email})<br>
+            <em>${m.subject}</em><br>
+            ${m.message}<br>
+            <small>Status: ${m.status} | Date: ${m.createdAt}</small>
+          </li>
+        `).join('')}
+      </ul>
+      <p><a href="/admin/login">Aller à l'admin</a></p>
+    `);
+  } catch (error) {
+    res.send(`
+      <h1>❌ Erreur Railway</h1>
+      <p>${error.message}</p>
+      <pre>${error.stack}</pre>
+    `);
+  }
+});
+
 // Routes - ORDRE IMPORTANT
 const mainRoutes = require('./routes/main');
 
