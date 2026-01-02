@@ -146,16 +146,16 @@ app.listen(PORT, async () => {
   
   // Initialiser la base de données
   try {
-    const { sequelize, Admin, Content } = require('./models/index');
-    const bcrypt = require('bcrypt');
-    
-    sequelize.sync({ alter: true })
+    const { sequelize } = require('./models');
+
+sequelize.sync()
   .then(() => {
-    console.log('✅ Base synchronisée (Railway)');
+    console.log('✅ Tables synchronisées (PostgreSQL)');
   })
   .catch(err => {
-    console.error('❌ Erreur sync DB:', err);
+    console.error('❌ Erreur DB:', err);
   });
+
 
 // middlewares
 app.use(express.json());

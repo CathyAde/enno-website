@@ -143,7 +143,7 @@ router.post('/contact', async (req, res) => {
           message,
           status: 'unread'
         });
-        console.log('✅ Message sauvegardé avec ID:', newMessage.id);
+        console.log('📧 Nouveau message reçu:', { name, email, subject });
       } else {
         console.log('❌ ContactMessage model non disponible');
       }
