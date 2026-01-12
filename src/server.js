@@ -59,39 +59,70 @@ app.use((req, res, next) => {
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
-// Route de debug pour Railway
+// Route de diagnostic complète pour Railway
 app.get('/debug-messages', async (req, res) => {
+  let diagnosticInfo = [];
+  
   try {
+    diagnosticInfo.push('🔍 DIAGNOSTIC COMPLET RAILWAY');
+    
+    // 1. Vérifier les variables d'environnement
+    diagnosticInfo.push('\n📋 VARIABLES D\'ENVIRONNEMENT:');
+    diagnosticInfo.push(`DATABASE_URL: ${process.env.DATABASE_URL ? 'CONFIGURÉ' : 'MANQUANT'}`);
+    diagnosticInfo.push(`NODE_ENV: ${process.env.NODE_ENV}`);
+    diagnosticInfo.push(`PORT: ${process.env.PORT}`);
+    
+    // 2. Tester la connexion à la base
+    diagnosticInfo.push('\n🔌 CONNEXION BASE DE DONNÉES:');
     const { ContactMessage, sequelize } = require('./models/index');
     
-    // Forcer la synchronisation
-    await sequelize.sync({ force: false });
+    await sequelize.authenticate();
+    diagnosticInfo.push('✅ Connexion PostgreSQL réussie');
     
-    // Créer un message de test
+    // 3. Synchroniser les tables
+    diagnosticInfo.push('\n🔄 SYNCHRONISATION TABLES:');
+    await sequelize.sync({ force: false });
+    diagnosticInfo.push('✅ Tables synchronisées');
+    
+    // 4. Vérifier les tables existantes
+    const tables = await sequelize.getQueryInterface().showAllTables();
+    diagnosticInfo.push(`📊 Tables trouvées: ${tables.join(', ')}`);
+    
+    // 5. Compter les messages existants
+    diagnosticInfo.push('\n📧 MESSAGES EXISTANTS:');
+    const existingCount = await ContactMessage.count();
+    diagnosticInfo.push(`Messages existants: ${existingCount}`);
+    
+    // 6. Créer un message de test
+    diagnosticInfo.push('\n🧪 CRÉATION MESSAGE TEST:');
     const testMessage = await ContactMessage.create({
-      name: 'Test Railway',
-      email: 'test@railway.com',
+      name: 'Test Railway Diagnostic',
+      email: 'diagnostic@railway.com',
       phone: '+242000000000',
-      subject: 'Test message Railway',
-      message: 'Message de test pour vérifier Railway',
+      subject: 'Message de diagnostic Railway',
+      message: 'Ce message a été créé automatiquement pour tester la base de données.',
       status: 'unread'
     });
+    diagnosticInfo.push(`✅ Message test créé avec ID: ${testMessage.id}`);
     
-    // Compter tous les messages
-    const totalMessages = await ContactMessage.count();
+    // 7. Récupérer tous les messages
     const allMessages = await ContactMessage.findAll({
       order: [['createdAt', 'DESC']],
       limit: 10
     });
     
+    const totalMessages = await ContactMessage.count();
+    diagnosticInfo.push(`📊 Total messages après test: ${totalMessages}`);
+    
+    // 8. Afficher le résultat
     res.send(`
-      <h1>🚆 Railway Debug</h1>
-      <p><strong>Total messages:</strong> ${totalMessages}</p>
-      <p><strong>Message test créé:</strong> ID ${testMessage.id}</p>
-      <h3>Tous les messages:</h3>
+      <h1>🚆 DIAGNOSTIC RAILWAY COMPLET</h1>
+      <pre>${diagnosticInfo.join('\n')}</pre>
+      
+      <h2>📧 DERNIERS MESSAGES (${allMessages.length}):</h2>
       <ul>
         ${allMessages.map(m => `
-          <li>
+          <li style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
             <strong>${m.name}</strong> (${m.email})<br>
             <em>${m.subject}</em><br>
             ${m.message}<br>
@@ -99,13 +130,34 @@ app.get('/debug-messages', async (req, res) => {
           </li>
         `).join('')}
       </ul>
-      <p><a href="/admin/login">Aller à l'admin</a></p>
+      
+      <h2>🔗 LIENS UTILES:</h2>
+      <p><a href="/admin/login">🔐 Admin Login</a></p>
+      <p><a href="/admin/messages">📧 Voir Messages Admin</a></p>
+      <p><a href="/">🏠 Retour Accueil</a></p>
+      
+      <h2>✅ RÉSOLUTION:</h2>
+      <p>Si vous voyez ce message, la base de données fonctionne correctement !</p>
+      <p>Les messages devraient maintenant apparaître dans l'admin.</p>
     `);
+    
   } catch (error) {
+    diagnosticInfo.push(`\n❌ ERREUR: ${error.message}`);
+    diagnosticInfo.push(`Stack: ${error.stack}`);
+    
     res.send(`
-      <h1>❌ Erreur Railway</h1>
-      <p>${error.message}</p>
-      <pre>${error.stack}</pre>
+      <h1>❌ ERREUR DIAGNOSTIC RAILWAY</h1>
+      <pre>${diagnosticInfo.join('\n')}</pre>
+      
+      <h2>🔧 SOLUTIONS POSSIBLES:</h2>
+      <ul>
+        <li>Vérifier que DATABASE_URL est configuré dans Railway</li>
+        <li>Vérifier que le service PostgreSQL est démarré</li>
+        <li>Vérifier que les deux services sont dans le même projet</li>
+        <li>Redémarrer le service web Railway</li>
+      </ul>
+      
+      <p><a href="/admin/login">Essayer l'admin quand même</a></p>
     `);
   }
 });
@@ -254,12 +306,18 @@ app.listen(PORT, async () => {
   
   // Initialiser la base de données
   try {
-    const { sequelize, Admin, Content } = require('./models/index');
+    const { sequelize, Admin, Content, ContactMessage, Service, Visitor, Projet } = require('./models/index');
     const bcrypt = require('bcrypt');
     
     console.log('🔄 Synchronisation de la base de données...');
-    await sequelize.sync({ force: false });
-    console.log('✅ Base de données synchronisée');
+    
+    // Forcer la synchronisation de toutes les tables
+    await sequelize.sync({ alter: true });
+    console.log('✅ Base de données synchronisée avec alter: true');
+    
+    // Vérifier les tables créées
+    const tables = await sequelize.getQueryInterface().showAllTables();
+    console.log(`📊 Tables créées: ${tables.join(', ')}`);
     
     // Créer admin par défaut
     const adminExists = await Admin.findOne({ where: { email: 'admin@enno.com' } });
@@ -295,9 +353,24 @@ app.listen(PORT, async () => {
       text: 'Fondée en 2008, ENNO est spécialisée dans les solutions énergétiques durables en République du Congo.'
     });
     
+    // Créer un message de test si aucun message n'existe
+    const messageCount = await ContactMessage.count();
+    if (messageCount === 0) {
+      await ContactMessage.create({
+        name: 'Message de bienvenue',
+        email: 'contact@enno.com',
+        phone: '+242000000000',
+        subject: 'Bienvenue sur ENNO Admin',
+        message: 'Ceci est un message de test pour vérifier que le système fonctionne correctement.',
+        status: 'unread'
+      });
+      console.log('✅ Message de test créé');
+    }
+    
     console.log('✅ Contenu par défaut créé');
     console.log('🎉 Initialisation terminée');
   } catch (error) {
     console.error('❌ Erreur initialisation:', error.message);
+    console.error('Stack:', error.stack);
   }
 });
