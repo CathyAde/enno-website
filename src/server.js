@@ -130,7 +130,10 @@ try {
     
     try {
       const { ContactMessage } = require('./models/index');
+      console.log('Tentative de récupération des messages...');
+      
       const messages = await ContactMessage.findAll({ order: [['createdAt', 'DESC']] });
+      console.log(`Messages trouvés: ${messages.length}`);
       
       res.render('admin/messages', {
         title: 'Messages',
@@ -139,7 +142,23 @@ try {
         layout: false
       });
     } catch (err) {
-      res.send(`<h1>Messages</h1><p>Erreur: ${err.message}</p><a href="/admin">Retour</a>`);
+      console.error('Erreur messages:', err);
+      
+      // Fallback avec HTML simple pour debug
+      res.send(`
+        <h1>Messages Admin</h1>
+        <p><strong>Erreur:</strong> ${err.message}</p>
+        <p><strong>Stack:</strong> ${err.stack}</p>
+        <hr>
+        <p>Vérifiez que:</p>
+        <ul>
+          <li>DATABASE_URL est configuré dans Railway</li>
+          <li>La base PostgreSQL est connectée</li>
+          <li>Des messages ont été envoyés via le formulaire</li>
+        </ul>
+        <p><a href="/debug-messages">Tester la création de message</a></p>
+        <p><a href="/admin">Retour Dashboard</a></p>
+      `);
     }
   });
   
