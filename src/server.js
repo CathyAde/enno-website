@@ -158,71 +158,75 @@ app.get('/admin/dashboard', async (req, res) => {
   }
   
   let messagesCount = 0, servicesCount = 0, contentsCount = 0, projetsCount = 0, unreadMessages = 0;
+  let recentMessages = [];
+  let stats = { visitorsToday: 0, visitorsThisWeek: 0, totalVisitors: 0 };
   
   try {
-    const { ContactMessage, Service, Content, Projet } = require('./models/index');
+    const { ContactMessage, Service, Content, Projet, Visitor } = require('./models/index');
     
     messagesCount = await ContactMessage.count();
     servicesCount = await Service.count();
     contentsCount = await Content.count();
     projetsCount = await Projet.count();
     unreadMessages = await ContactMessage.count({ where: { status: 'unread' } });
+    
+    // Messages récents
+    recentMessages = await ContactMessage.findAll({
+      order: [['createdAt', 'DESC']],
+      limit: 5
+    });
+    
+    // Statistiques visiteurs
+    const today = new Date();
+    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    
+    stats.visitorsToday = await Visitor.count({
+      where: {
+        visitDate: {
+          [require('sequelize').Op.gte]: today.toISOString().split('T')[0]
+        }
+      }
+    });
+    
+    stats.visitorsThisWeek = await Visitor.count({
+      where: {
+        visitDate: {
+          [require('sequelize').Op.gte]: weekAgo
+        }
+      }
+    });
+    
+    stats.totalVisitors = await Visitor.count();
+    
   } catch (error) {
     console.log('⚠️ Dashboard sans DB:', error.message);
   }
   
-  res.send(`
-    <h1>🏠 Dashboard ENNO</h1>
-    <p>Bienvenue ${req.session.user.name}</p>
-    
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
-      <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
-        <h3>${messagesCount}</h3>
-        <p>Messages</p>
-      </div>
-      <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; text-align: center;">
-        <h3>${servicesCount}</h3>
-        <p>Services</p>
-      </div>
-      <div style="background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
-        <h3>${contentsCount}</h3>
-        <p>Contenus</p>
-      </div>
-      <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; text-align: center;">
-        <h3>${projetsCount}</h3>
-        <p>Projets</p>
-      </div>
-    </div>
-    
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3>📧 Messages</h3>
-        <p><a href="/admin/messages">Voir les messages (${unreadMessages} non lus)</a></p>
-      </div>
-      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3>🛠️ Services</h3>
-        <p><a href="/admin/services">Gérer les services</a></p>
-      </div>
-      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3>📄 Contenus</h3>
-        <p><a href="/admin/contents">Modifier les pages</a></p>
-      </div>
-      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3>🎨 Projets</h3>
-        <p><a href="/admin/projets">Gérer les projets</a></p>
-      </div>
-      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3>🖼️ Images</h3>
-        <p><a href="/admin/images">Gérer les images</a></p>
-      </div>
-      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3>🚪 Déconnexion</h3>
-        <p><a href="/admin/logout">Se déconnecter</a></p>
-      </div>
-    </div>
-    
-    <p style="margin-top: 30px;"><a href="/debug-messages">Debug Messages</a></p>
-  `);
+  try {
+    res.render('admin/dashboard', {
+      title: 'Dashboard Admin - ENNO',
+      admin: req.session.user,
+      messagesCount,
+      servicesCount,
+      contentsCount,
+      projetsCount,
+      unreadMessages,
+      recentMessages,
+      stats,
+      layout: false
+    });
+  } catch (error) {
+    // Fallback si le template ne charge pas
+    res.send(`
+      <h1>🏠 Dashboard ENNO</h1>
+      <p>Bienvenue ${req.session.user.name}</p>
+      <p>Template dashboard en cours de chargement...</p>
+      <a href="/admin/messages">Messages (${unreadMessages})</a> |
+      <a href="/admin/services">Services</a> |
+      <a href="/admin/contents">Contenus</a> |
+      <a href="/admin/logout">Déconnexion</a>
+    `);
+  }
 });
 
 app.get('/admin/messages', async (req, res) => {
