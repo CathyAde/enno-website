@@ -123,6 +123,94 @@ try {
   console.log('✅ Routes admin complètes chargées');
 } catch (error) {
   console.log('⚠️ Erreur routes admin:', error.message);
+  
+  // Routes de secours pour Railway
+  app.get('/admin/messages', async (req, res) => {
+    if (!req.session?.user) return res.redirect('/admin/login');
+    
+    try {
+      const { ContactMessage } = require('./models/index');
+      const messages = await ContactMessage.findAll({ order: [['createdAt', 'DESC']] });
+      
+      res.render('admin/messages', {
+        title: 'Messages',
+        messages,
+        admin: req.session.user,
+        layout: false
+      });
+    } catch (err) {
+      res.send(`<h1>Messages</h1><p>Erreur: ${err.message}</p><a href="/admin">Retour</a>`);
+    }
+  });
+  
+  app.get('/admin/contents/accueil', async (req, res) => {
+    if (!req.session?.user) return res.redirect('/admin/login');
+    
+    try {
+      const { Content } = require('./models/index');
+      const content = await Content.findOne({ where: { page: 'accueil' } });
+      
+      res.render('admin/editContent', {
+        title: 'Modifier Accueil',
+        content: content || { page: 'accueil', title: '', subtitle: '', text: '' },
+        admin: req.session.user,
+        layout: false
+      });
+    } catch (err) {
+      res.send(`<h1>Gestion Accueil</h1><p>Erreur: ${err.message}</p><a href="/admin">Retour</a>`);
+    }
+  });
+  
+  app.get('/admin/contents/services', async (req, res) => {
+    if (!req.session?.user) return res.redirect('/admin/login');
+    
+    try {
+      const { Content } = require('./models/index');
+      const content = await Content.findOne({ where: { page: 'services' } });
+      
+      res.render('admin/editContent', {
+        title: 'Modifier Services',
+        content: content || { page: 'services', title: '', subtitle: '', text: '' },
+        admin: req.session.user,
+        layout: false
+      });
+    } catch (err) {
+      res.send(`<h1>Gestion Services</h1><p>Erreur: ${err.message}</p><a href="/admin">Retour</a>`);
+    }
+  });
+  
+  app.get('/admin/contents/apropos', async (req, res) => {
+    if (!req.session?.user) return res.redirect('/admin/login');
+    
+    try {
+      const { Content } = require('./models/index');
+      const content = await Content.findOne({ where: { page: 'apropos' } });
+      
+      res.render('admin/editContent', {
+        title: 'Modifier À propos',
+        content: content || { page: 'apropos', title: '', subtitle: '', text: '' },
+        admin: req.session.user,
+        layout: false
+      });
+    } catch (err) {
+      res.send(`<h1>Gestion À propos</h1><p>Erreur: ${err.message}</p><a href="/admin">Retour</a>`);
+    }
+  });
+  
+  app.post('/admin/contents/:page', async (req, res) => {
+    if (!req.session?.user) return res.redirect('/admin/login');
+    
+    try {
+      const { Content } = require('./models/index');
+      const { title, subtitle, text } = req.body;
+      const page = req.params.page;
+      
+      await Content.upsert({ page, title, subtitle, text });
+      res.redirect(`/admin/contents/${page}?success=1`);
+    } catch (err) {
+      res.redirect(`/admin/contents/${req.params.page}?error=${err.message}`);
+    }
+  });
 }
 
 // 404
