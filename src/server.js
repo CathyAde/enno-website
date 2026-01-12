@@ -110,19 +110,110 @@ app.get('/debug-messages', async (req, res) => {
   }
 });
 
-// Routes - ORDRE IMPORTANT
-const mainRoutes = require('./routes/main');
+// Routes admin de secours (si le fichier admin.js ne charge pas)
+app.get('/admin/login', (req, res) => {
+  try {
+    res.render('admin/login', {
+      title: 'Connexion Admin - ENNO',
+      error: null,
+      email: '',
+      layout: false
+    });
+  } catch (error) {
+    res.send(`
+      <h1>Admin Login</h1>
+      <form method="POST" action="/admin/login">
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="password" placeholder="Mot de passe" required><br><br>
+        <button type="submit">Se connecter</button>
+      </form>
+      <p>Email: admin@enno.com | Mot de passe: admin123</p>
+    `);
+  }
+});
 
-// Routes admin en premier
+app.post('/admin/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    if (email === 'admin@enno.com' && password === 'admin123') {
+      req.session.user = {
+        id: 1,
+        email: 'admin@enno.com',
+        name: 'Admin ENNO',
+        isAdmin: true
+      };
+      return res.redirect('/admin/dashboard');
+    }
+    
+    res.redirect('/admin/login?error=Identifiants incorrects');
+  } catch (error) {
+    res.redirect('/admin/login?error=Erreur de connexion');
+  }
+});
+
+app.get('/admin/dashboard', (req, res) => {
+  if (!req.session?.user) {
+    return res.redirect('/admin/login');
+  }
+  
+  res.send(`
+    <h1>🚆 Dashboard ENNO Railway</h1>
+    <p>Bienvenue ${req.session.user.name}</p>
+    <ul>
+      <li><a href="/debug-messages">Debug Messages</a></li>
+      <li><a href="/admin/messages">Messages</a></li>
+      <li><a href="/admin/logout">Déconnexion</a></li>
+    </ul>
+  `);
+});
+
+app.get('/admin/messages', async (req, res) => {
+  if (!req.session?.user) {
+    return res.redirect('/admin/login');
+  }
+  
+  try {
+    const { ContactMessage } = require('./models/index');
+    const messages = await ContactMessage.findAll({
+      order: [['createdAt', 'DESC']]
+    });
+    
+    res.send(`
+      <h1>📧 Messages (${messages.length})</h1>
+      <a href="/admin/dashboard">← Retour Dashboard</a>
+      <ul>
+        ${messages.map(m => `
+          <li style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+            <strong>${m.name}</strong> (${m.email})<br>
+            <em>${m.subject}</em><br>
+            ${m.message}<br>
+            <small>Status: ${m.status} | ${m.createdAt}</small>
+          </li>
+        `).join('')}
+      </ul>
+    `);
+  } catch (error) {
+    res.send(`<h1>❌ Erreur Messages</h1><p>${error.message}</p>`);
+  }
+});
+
+app.get('/admin/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/admin/login');
+});
+
+// Routes principales
+const mainRoutes = require('./routes/main');
+app.use('/', mainRoutes);
+
+// Essayer de charger les routes admin (optionnel)
 try {
   const adminRoutes = require('./routes/admin');
-  app.use('/admin', adminRoutes);
+  console.log('✅ Routes admin chargées depuis le fichier');
 } catch (error) {
-  console.error('Erreur chargement routes admin:', error);
+  console.log('⚠️ Routes admin de secours activées');
 }
-
-// Routes principales en dernier
-app.use('/', mainRoutes);
 
 // 404
 app.use((req, res) => {
