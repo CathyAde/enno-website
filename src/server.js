@@ -152,20 +152,75 @@ app.post('/admin/login', async (req, res) => {
   }
 });
 
-app.get('/admin/dashboard', (req, res) => {
+app.get('/admin/dashboard', async (req, res) => {
   if (!req.session?.user) {
     return res.redirect('/admin/login');
   }
   
-  res.send(`
-    <h1>🚆 Dashboard ENNO Railway</h1>
-    <p>Bienvenue ${req.session.user.name}</p>
-    <ul>
-      <li><a href="/debug-messages">Debug Messages</a></li>
-      <li><a href="/admin/messages">Messages</a></li>
-      <li><a href="/admin/logout">Déconnexion</a></li>
-    </ul>
-  `);
+  try {
+    const { ContactMessage, Service, Content, Projet } = require('./models/index');
+    
+    const messagesCount = await ContactMessage.count();
+    const servicesCount = await Service.count();
+    const contentsCount = await Content.count();
+    const projetsCount = await Projet.count();
+    const unreadMessages = await ContactMessage.count({ where: { status: 'unread' } });
+    
+    res.send(`
+      <h1>🏠 Dashboard ENNO</h1>
+      <p>Bienvenue ${req.session.user.name}</p>
+      
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
+        <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
+          <h3>${messagesCount}</h3>
+          <p>Messages</p>
+        </div>
+        <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; text-align: center;">
+          <h3>${servicesCount}</h3>
+          <p>Services</p>
+        </div>
+        <div style="background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
+          <h3>${contentsCount}</h3>
+          <p>Contenus</p>
+        </div>
+        <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; text-align: center;">
+          <h3>${projetsCount}</h3>
+          <p>Projets</p>
+        </div>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h3>📧 Messages</h3>
+          <p><a href="/admin/messages">Voir les messages (${unreadMessages} non lus)</a></p>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h3>🛠️ Services</h3>
+          <p><a href="/admin/services">Gérer les services</a></p>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h3>📄 Contenus</h3>
+          <p><a href="/admin/contents">Modifier les pages</a></p>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h3>🎨 Projets</h3>
+          <p><a href="/admin/projets">Gérer les projets</a></p>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h3>🖼️ Images</h3>
+          <p><a href="/admin/images">Gérer les images</a></p>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h3>🚪 Déconnexion</h3>
+          <p><a href="/admin/logout">Se déconnecter</a></p>
+        </div>
+      </div>
+      
+      <p style="margin-top: 30px;"><a href="/debug-messages">Debug Messages</a></p>
+    `);
+  } catch (error) {
+    res.send(`<h1>❌ Erreur Dashboard</h1><p>${error.message}</p>`);
+  }
 });
 
 app.get('/admin/messages', async (req, res) => {
@@ -201,6 +256,27 @@ app.get('/admin/messages', async (req, res) => {
 app.get('/admin/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/admin/login');
+});
+
+// Routes admin manquantes
+app.get('/admin/services', (req, res) => {
+  if (!req.session?.user) return res.redirect('/admin/login');
+  res.send('<h1>Services</h1><p>Fonctionnalité à venir</p><a href="/admin/dashboard">Retour</a>');
+});
+
+app.get('/admin/contents', (req, res) => {
+  if (!req.session?.user) return res.redirect('/admin/login');
+  res.send('<h1>Contenus</h1><p>Fonctionnalité à venir</p><a href="/admin/dashboard">Retour</a>');
+});
+
+app.get('/admin/projets', (req, res) => {
+  if (!req.session?.user) return res.redirect('/admin/login');
+  res.send('<h1>Projets</h1><p>Fonctionnalité à venir</p><a href="/admin/dashboard">Retour</a>');
+});
+
+app.get('/admin/images', (req, res) => {
+  if (!req.session?.user) return res.redirect('/admin/login');
+  res.send('<h1>Images</h1><p>Fonctionnalité à venir</p><a href="/admin/dashboard">Retour</a>');
 });
 
 // Routes principales
