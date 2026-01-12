@@ -172,150 +172,56 @@ app.get('/admin/dashboard', async (req, res) => {
   }
   
   res.send(`
-    <!DOCTYPE html>
-    <html lang="fr">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Dashboard Admin - ENNO</title>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-      <style>
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-        .dashboard-container { padding: 2rem 0; }
-        .welcome-card { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .stat-card { background: white; border-radius: 15px; padding: 1.5rem; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
-        .stat-card:hover { transform: translateY(-5px); }
-        .stat-number { font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; }
-        .stat-label { color: #6c757d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
-        .menu-card { background: white; border-radius: 15px; padding: 1.5rem; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: all 0.3s; height: 100%; }
-        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-        .menu-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-        .menu-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .menu-link { text-decoration: none; color: inherit; }
-        .menu-link:hover { color: inherit; }
-        .text-primary-custom { color: #667eea !important; }
-        .text-success-custom { color: #28a745 !important; }
-        .text-warning-custom { color: #ffc107 !important; }
-        .text-info-custom { color: #17a2b8 !important; }
-      </style>
-    </head>
-    <body>
-      <div class="container dashboard-container">
-        <!-- Welcome Section -->
-        <div class="welcome-card text-center">
-          <h1 class="display-4 mb-3">🏠 Dashboard ENNO</h1>
-          <p class="lead text-muted">Bienvenue ${req.session.user.name}</p>
-          <small class="text-muted">Gestion complète de votre site web</small>
-        </div>
-
-        <!-- Statistics Cards -->
-        <div class="row mb-4">
-          <div class="col-md-3 mb-3">
-            <div class="stat-card">
-              <div class="stat-number text-primary-custom">${messagesCount}</div>
-              <div class="stat-label">Messages</div>
-            </div>
-          </div>
-          <div class="col-md-3 mb-3">
-            <div class="stat-card">
-              <div class="stat-number text-success-custom">${servicesCount}</div>
-              <div class="stat-label">Services</div>
-            </div>
-          </div>
-          <div class="col-md-3 mb-3">
-            <div class="stat-card">
-              <div class="stat-number text-warning-custom">${contentsCount}</div>
-              <div class="stat-label">Contenus</div>
-            </div>
-          </div>
-          <div class="col-md-3 mb-3">
-            <div class="stat-card">
-              <div class="stat-number text-info-custom">${projetsCount}</div>
-              <div class="stat-label">Projets</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Menu Cards -->
-        <div class="row">
-          <div class="col-md-4 mb-4">
-            <a href="/admin/messages" class="menu-link">
-              <div class="menu-card">
-                <div class="menu-icon text-primary-custom">
-                  <i class="fas fa-envelope"></i>
-                </div>
-                <div class="menu-title">Messages</div>
-                <p class="text-muted mb-0">Voir les messages (${unreadMessages} non lus)</p>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-4 mb-4">
-            <a href="/admin/services" class="menu-link">
-              <div class="menu-card">
-                <div class="menu-icon text-success-custom">
-                  <i class="fas fa-cogs"></i>
-                </div>
-                <div class="menu-title">Services</div>
-                <p class="text-muted mb-0">Gérer les services</p>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-4 mb-4">
-            <a href="/admin/contents" class="menu-link">
-              <div class="menu-card">
-                <div class="menu-icon text-warning-custom">
-                  <i class="fas fa-file-alt"></i>
-                </div>
-                <div class="menu-title">Contenus</div>
-                <p class="text-muted mb-0">Modifier les pages</p>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-4 mb-4">
-            <a href="/admin/projets" class="menu-link">
-              <div class="menu-card">
-                <div class="menu-icon text-info-custom">
-                  <i class="fas fa-project-diagram"></i>
-                </div>
-                <div class="menu-title">Projets</div>
-                <p class="text-muted mb-0">Gérer les projets</p>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-4 mb-4">
-            <a href="/admin/images" class="menu-link">
-              <div class="menu-card">
-                <div class="menu-icon" style="color: #e83e8c;">
-                  <i class="fas fa-images"></i>
-                </div>
-                <div class="menu-title">Images</div>
-                <p class="text-muted mb-0">Gérer les images</p>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-4 mb-4">
-            <a href="/admin/logout" class="menu-link">
-              <div class="menu-card">
-                <div class="menu-icon" style="color: #dc3545;">
-                  <i class="fas fa-sign-out-alt"></i>
-                </div>
-                <div class="menu-title">Déconnexion</div>
-                <p class="text-muted mb-0">Se déconnecter</p>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <!-- Debug Link -->
-        <div class="text-center mt-4">
-          <a href="/debug-messages" class="btn btn-outline-light btn-sm">Debug Messages</a>
-        </div>
+    <h1>🏠 Dashboard ENNO</h1>
+    <p>Bienvenue ${req.session.user.name}</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
+      <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3>${messagesCount}</h3>
+        <p>Messages</p>
       </div>
-
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
-    </html>
+      <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3>${servicesCount}</h3>
+        <p>Services</p>
+      </div>
+      <div style="background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3>${contentsCount}</h3>
+        <p>Contenus</p>
+      </div>
+      <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3>${projetsCount}</h3>
+        <p>Projets</p>
+      </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>📧 Messages</h3>
+        <p><a href="/admin/messages">Voir les messages (${unreadMessages} non lus)</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🛠️ Services</h3>
+        <p><a href="/admin/services">Gérer les services</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>📄 Contenus</h3>
+        <p><a href="/admin/contents">Modifier les pages</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🎨 Projets</h3>
+        <p><a href="/admin/projets">Gérer les projets</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🖼️ Images</h3>
+        <p><a href="/admin/images">Gérer les images</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🚪 Déconnexion</h3>
+        <p><a href="/admin/logout">Se déconnecter</a></p>
+      </div>
+    </div>
+    
+    <p style="margin-top: 30px;"><a href="/debug-messages">Debug Messages</a></p>
   `);
 });
 
