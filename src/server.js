@@ -110,188 +110,20 @@ app.get('/debug-messages', async (req, res) => {
   }
 });
 
-// Routes admin de secours (si le fichier admin.js ne charge pas)
-app.get('/admin/login', (req, res) => {
-  try {
-    res.render('admin/login', {
-      title: 'Connexion Admin - ENNO',
-      error: null,
-      email: '',
-      layout: false
-    });
-  } catch (error) {
-    res.send(`
-      <h1>Admin Login</h1>
-      <form method="POST" action="/admin/login">
-        <input type="email" name="email" placeholder="Email" required><br><br>
-        <input type="password" name="password" placeholder="Mot de passe" required><br><br>
-        <button type="submit">Se connecter</button>
-      </form>
-      <p>Email: admin@enno.com | Mot de passe: admin123</p>
-    `);
-  }
-});
-
-app.post('/admin/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    
-    if (email === 'admin@enno.com' && password === 'admin123') {
-      req.session.user = {
-        id: 1,
-        email: 'admin@enno.com',
-        name: 'Admin ENNO',
-        isAdmin: true
-      };
-      return res.redirect('/admin/dashboard');
-    }
-    
-    res.redirect('/admin/login?error=Identifiants incorrects');
-  } catch (error) {
-    res.redirect('/admin/login?error=Erreur de connexion');
-  }
-});
-
-app.get('/admin/dashboard', async (req, res) => {
-  if (!req.session?.user) {
-    return res.redirect('/admin/login');
-  }
-  
-  let messagesCount = 0, servicesCount = 0, contentsCount = 0, projetsCount = 0, unreadMessages = 0;
-  let recentMessages = [];
-  let stats = { visitorsToday: 0, visitorsThisWeek: 0, totalVisitors: 0 };
-  
-  try {
-    const { ContactMessage, Service, Content, Projet, Visitor } = require('./models/index');
-    
-    messagesCount = await ContactMessage.count();
-    servicesCount = await Service.count();
-    contentsCount = await Content.count();
-    projetsCount = await Projet.count();
-    unreadMessages = await ContactMessage.count({ where: { status: 'unread' } });
-    
-    // Messages récents
-    recentMessages = await ContactMessage.findAll({
-      order: [['createdAt', 'DESC']],
-      limit: 5
-    });
-    
-    // Statistiques visiteurs
-    const today = new Date();
-    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-    
-    stats.visitorsToday = await Visitor.count({
-      where: {
-        visitDate: {
-          [require('sequelize').Op.gte]: today.toISOString().split('T')[0]
-        }
-      }
-    });
-    
-    stats.visitorsThisWeek = await Visitor.count({
-      where: {
-        visitDate: {
-          [require('sequelize').Op.gte]: weekAgo
-        }
-      }
-    });
-    
-    stats.totalVisitors = await Visitor.count();
-    
-  } catch (error) {
-    console.log('⚠️ Dashboard sans DB:', error.message);
-  }
-  
-  try {
-    res.render('admin/dashboard', {
-      title: 'Dashboard Admin - ENNO',
-      admin: req.session.user,
-      messagesCount,
-      servicesCount,
-      contentsCount,
-      projetsCount,
-      unreadMessages,
-      recentMessages,
-      stats,
-      layout: false
-    });
-  } catch (error) {
-    // Fallback si le template ne charge pas
-    res.send(`
-      <h1>🏠 Dashboard ENNO</h1>
-      <p>Bienvenue ${req.session.user.name}</p>
-      <p>Template dashboard en cours de chargement...</p>
-      <a href="/admin/messages">Messages (${unreadMessages})</a> |
-      <a href="/admin/services">Services</a> |
-      <a href="/admin/contents">Contenus</a> |
-      <a href="/admin/logout">Déconnexion</a>
-    `);
-  }
-});
-
-app.get('/admin/messages', async (req, res) => {
-  if (!req.session?.user) {
-    return res.redirect('/admin/login');
-  }
-  
-  try {
-    const { ContactMessage } = require('./models/index');
-    const messages = await ContactMessage.findAll({
-      order: [['createdAt', 'DESC']]
-    });
-    
-    res.send(`
-      <h1>📧 Messages (${messages.length})</h1>
-      <a href="/admin/dashboard">← Retour Dashboard</a>
-      <ul>
-        ${messages.map(m => `
-          <li style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
-            <strong>${m.name}</strong> (${m.email})<br>
-            <em>${m.subject}</em><br>
-            ${m.message}<br>
-            <small>Status: ${m.status} | ${m.createdAt}</small>
-          </li>
-        `).join('')}
-      </ul>
-    `);
-  } catch (error) {
-    res.send(`<h1>❌ Erreur Messages</h1><p>${error.message}</p>`);
-  }
-});
-
-app.get('/admin/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/admin/login');
-});
-
-// Routes admin manquantes
-app.get('/admin/services', (req, res) => {
-  if (!req.session?.user) return res.redirect('/admin/login');
-  res.send('<h1>Services</h1><p>Fonctionnalité à venir</p><a href="/admin/dashboard">Retour</a>');
-});
-
-app.get('/admin/contents', (req, res) => {
-  if (!req.session?.user) return res.redirect('/admin/login');
-  res.send('<h1>Contenus</h1><p>Fonctionnalité à venir</p><a href="/admin/dashboard">Retour</a>');
-});
-
-app.get('/admin/projets', (req, res) => {
-  if (!req.session?.user) return res.redirect('/admin/login');
-  res.send('<h1>Projets</h1><p>Fonctionnalité à venir</p><a href="/admin/dashboard">Retour</a>');
-});
-
-app.get('/admin/images', (req, res) => {
-  if (!req.session?.user) return res.redirect('/admin/login');
-  res.send('<h1>Images</h1><p>Fonctionnalité à venir</p><a href="/admin/dashboard">Retour</a>');
-});
+// Routes admin de secours supprimées - utilisation du fichier routes/admin.js
 
 // Routes principales
 const mainRoutes = require('./routes/main');
 app.use('/', mainRoutes);
 
-// Les routes admin de secours sont déjà définies ci-dessus
-// Ne pas charger le fichier admin.js pour éviter les conflits
-console.log('⚠️ Routes admin de secours activées');
+// Charger les routes admin complètes
+try {
+  const adminRoutes = require('./routes/admin');
+  app.use('/admin', adminRoutes);
+  console.log('✅ Routes admin complètes chargées');
+} catch (error) {
+  console.log('⚠️ Erreur routes admin:', error.message);
+}
 
 // 404
 app.use((req, res) => {
