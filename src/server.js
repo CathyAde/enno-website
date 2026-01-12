@@ -157,70 +157,72 @@ app.get('/admin/dashboard', async (req, res) => {
     return res.redirect('/admin/login');
   }
   
+  let messagesCount = 0, servicesCount = 0, contentsCount = 0, projetsCount = 0, unreadMessages = 0;
+  
   try {
     const { ContactMessage, Service, Content, Projet } = require('./models/index');
     
-    const messagesCount = await ContactMessage.count();
-    const servicesCount = await Service.count();
-    const contentsCount = await Content.count();
-    const projetsCount = await Projet.count();
-    const unreadMessages = await ContactMessage.count({ where: { status: 'unread' } });
-    
-    res.send(`
-      <h1>🏠 Dashboard ENNO</h1>
-      <p>Bienvenue ${req.session.user.name}</p>
-      
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
-        <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
-          <h3>${messagesCount}</h3>
-          <p>Messages</p>
-        </div>
-        <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; text-align: center;">
-          <h3>${servicesCount}</h3>
-          <p>Services</p>
-        </div>
-        <div style="background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
-          <h3>${contentsCount}</h3>
-          <p>Contenus</p>
-        </div>
-        <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; text-align: center;">
-          <h3>${projetsCount}</h3>
-          <p>Projets</p>
-        </div>
-      </div>
-      
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h3>📧 Messages</h3>
-          <p><a href="/admin/messages">Voir les messages (${unreadMessages} non lus)</a></p>
-        </div>
-        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h3>🛠️ Services</h3>
-          <p><a href="/admin/services">Gérer les services</a></p>
-        </div>
-        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h3>📄 Contenus</h3>
-          <p><a href="/admin/contents">Modifier les pages</a></p>
-        </div>
-        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h3>🎨 Projets</h3>
-          <p><a href="/admin/projets">Gérer les projets</a></p>
-        </div>
-        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h3>🖼️ Images</h3>
-          <p><a href="/admin/images">Gérer les images</a></p>
-        </div>
-        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h3>🚪 Déconnexion</h3>
-          <p><a href="/admin/logout">Se déconnecter</a></p>
-        </div>
-      </div>
-      
-      <p style="margin-top: 30px;"><a href="/debug-messages">Debug Messages</a></p>
-    `);
+    messagesCount = await ContactMessage.count();
+    servicesCount = await Service.count();
+    contentsCount = await Content.count();
+    projetsCount = await Projet.count();
+    unreadMessages = await ContactMessage.count({ where: { status: 'unread' } });
   } catch (error) {
-    res.send(`<h1>❌ Erreur Dashboard</h1><p>${error.message}</p>`);
+    console.log('⚠️ Dashboard sans DB:', error.message);
   }
+  
+  res.send(`
+    <h1>🏠 Dashboard ENNO</h1>
+    <p>Bienvenue ${req.session.user.name}</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
+      <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3>${messagesCount}</h3>
+        <p>Messages</p>
+      </div>
+      <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3>${servicesCount}</h3>
+        <p>Services</p>
+      </div>
+      <div style="background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3>${contentsCount}</h3>
+        <p>Contenus</p>
+      </div>
+      <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3>${projetsCount}</h3>
+        <p>Projets</p>
+      </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>📧 Messages</h3>
+        <p><a href="/admin/messages">Voir les messages (${unreadMessages} non lus)</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🛠️ Services</h3>
+        <p><a href="/admin/services">Gérer les services</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>📄 Contenus</h3>
+        <p><a href="/admin/contents">Modifier les pages</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🎨 Projets</h3>
+        <p><a href="/admin/projets">Gérer les projets</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🖼️ Images</h3>
+        <p><a href="/admin/images">Gérer les images</a></p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🚪 Déconnexion</h3>
+        <p><a href="/admin/logout">Se déconnecter</a></p>
+      </div>
+    </div>
+    
+    <p style="margin-top: 30px;"><a href="/debug-messages">Debug Messages</a></p>
+  `);
 });
 
 app.get('/admin/messages', async (req, res) => {
@@ -283,13 +285,9 @@ app.get('/admin/images', (req, res) => {
 const mainRoutes = require('./routes/main');
 app.use('/', mainRoutes);
 
-// Essayer de charger les routes admin (optionnel)
-try {
-  const adminRoutes = require('./routes/admin');
-  console.log('✅ Routes admin chargées depuis le fichier');
-} catch (error) {
-  console.log('⚠️ Routes admin de secours activées');
-}
+// Les routes admin de secours sont déjà définies ci-dessus
+// Ne pas charger le fichier admin.js pour éviter les conflits
+console.log('⚠️ Routes admin de secours activées');
 
 // 404
 app.use((req, res) => {

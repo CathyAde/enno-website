@@ -23,10 +23,7 @@ const sequelize = process.env.DATABASE_URL
         dialect: 'postgres',
         logging: false,
         dialectOptions: {
-          ssl: process.env.NODE_ENV === 'production' ? {
-            require: true,
-            rejectUnauthorized: false
-          } : false
+          ssl: false // Pas de SSL en local
         }
       }
     );
