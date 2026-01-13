@@ -1,10 +1,11 @@
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
-// Configuration Railway avec DATABASE_URL
+// Configuration Railway avec SSL obligatoire
 const sequelize = process.env.DATABASE_URL 
   ? new Sequelize(process.env.DATABASE_URL, {
       dialect: 'postgres',
+      protocol: 'postgres',
       logging: false,
       dialectOptions: {
         ssl: {
