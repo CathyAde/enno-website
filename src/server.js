@@ -410,9 +410,6 @@ try {
     } catch (err) {
       res.send(`<h1>Statistiques</h1><p>Erreur: ${err.message}</p><a href="/admin">Retour</a>`);
     }
-  });) {
-      res.send(`<h1>Gestion Services</h1><p>Erreur: ${err.message}</p><a href="/admin">Retour</a>`);
-    }
   });
   
   app.get('/admin/contents/apropos', async (req, res) => {
