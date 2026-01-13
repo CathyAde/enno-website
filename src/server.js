@@ -304,9 +304,16 @@ app.listen(PORT, async () => {
   console.log(`🚀 ENNO lancé sur http://localhost:${PORT}`);
   console.log(`📱 Admin: http://localhost:${PORT}/admin/login`);
   
-  // Initialiser la base de données
+  // TEST DE CONNEXION IMMÉDIAT
   try {
-    const { sequelize, Admin, Content, ContactMessage, Service, Visitor, Projet } = require('./models/index');
+    const { sequelize } = require('./models/index');
+    
+    console.log('🔌 Test de connexion PostgreSQL...');
+    await sequelize.authenticate();
+    console.log('✅ PostgreSQL connecté (Railway)');
+    
+    // Initialiser la base de données
+    const { Admin, Content, ContactMessage, Service, Visitor, Projet } = require('./models/index');
     const bcrypt = require('bcrypt');
     
     console.log('🔄 Synchronisation de la base de données...');
@@ -369,8 +376,23 @@ app.listen(PORT, async () => {
     
     console.log('✅ Contenu par défaut créé');
     console.log('🎉 Initialisation terminée');
+    
   } catch (error) {
-    console.error('❌ Erreur initialisation:', error.message);
-    console.error('Stack:', error.stack);
+    console.error('❌ PostgreSQL KO:', error.message);
+    console.error('❌ Type d\'erreur:', error.name);
+    console.error('❌ Stack complète:', error.stack);
+    
+    // Diagnostic détaillé
+    console.log('\n🔍 DIAGNOSTIC RAILWAY:');
+    console.log(`DATABASE_URL présent: ${!!process.env.DATABASE_URL}`);
+    console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+    
+    if (error.name === 'SequelizeConnectionRefusedError') {
+      console.log('\n🚨 CONNEXION REFUSÉE - VÉRIFIEZ:');
+      console.log('1. Service PostgreSQL démarré dans Railway');
+      console.log('2. DATABASE_URL configuré dans les variables');
+      console.log('3. Services liés dans le même projet');
+      console.log('4. SSL activé pour Railway');
+    }
   }
 });
