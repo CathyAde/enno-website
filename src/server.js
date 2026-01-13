@@ -59,6 +59,42 @@ app.use((req, res, next) => {
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
+// Middleware de tracking des visiteurs
+app.use(async (req, res, next) => {
+  // Ignorer les fichiers statiques et routes admin
+  if (req.path.startsWith('/css') || req.path.startsWith('/js') || 
+      req.path.startsWith('/images') || req.path.startsWith('/admin') ||
+      req.path.startsWith('/debug')) {
+    return next();
+  }
+  
+  try {
+    const { Visitor } = require('./models/index');
+    if (Visitor) {
+      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+      const userAgent = req.get('User-Agent') || 'unknown';
+      const page = req.path;
+      const referer = req.get('Referer') || null;
+      const sessionId = req.sessionID || null;
+      
+      await Visitor.create({
+        ip,
+        userAgent,
+        page,
+        referer,
+        sessionId
+      });
+      
+      console.log(`👥 Visiteur: ${ip} sur ${page}`);
+    }
+  } catch (error) {
+    // Ignorer les erreurs de tracking pour ne pas casser le site
+    console.log('Erreur tracking visiteur:', error.message);
+  }
+  
+  next();
+});
+
 // Route de diagnostic complète pour Railway
 app.get('/debug-messages', async (req, res) => {
   let diagnosticInfo = [];
