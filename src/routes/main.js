@@ -143,12 +143,13 @@ router.post('/contact', async (req, res) => {
           message,
           status: 'unread'
         });
-        console.log('📧 Nouveau message reçu:', { name, email, subject });
+        console.log('✅ Message sauvegardé avec ID:', newMessage.id);
       } else {
         console.log('❌ ContactMessage model non disponible');
       }
     } catch (dbError) {
       console.log('❌ Erreur sauvegarde message:', dbError.message);
+      console.log('Stack:', dbError.stack);
     }
     
     res.redirect('/contact?success=Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.');
