@@ -198,8 +198,6 @@ app.get('/debug-messages', async (req, res) => {
   }
 });
 
-// Routes admin de secours supprimées - utilisation du fichier routes/admin.js
-
 // Routes principales
 const mainRoutes = require('./routes/main');
 app.use('/', mainRoutes);
