@@ -124,16 +124,51 @@ exports.dashboard = async (req, res) => {
     try {
       if (Visitor) {
         const today = new Date();
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const startOfWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        
         stats.visitorsToday = await Visitor.count({
           where: {
             createdAt: {
-              [Op.gte]: new Date(today.getFullYear(), today.getMonth(), today.getDate())
+              [Op.gte]: startOfDay
             }
           }
         });
+        
+        stats.visitorsThisWeek = await Visitor.count({
+          where: {
+            createdAt: {
+              [Op.gte]: startOfWeek
+            }
+          }
+        });
+        
+        stats.visitorsThisMonth = await Visitor.count({
+          where: {
+            createdAt: {
+              [Op.gte]: startOfMonth
+            }
+          }
+        });
+        
         stats.totalVisitors = await Visitor.count();
+        
+        stats.uniqueVisitorsToday = await Visitor.count({
+          where: {
+            createdAt: {
+              [Op.gte]: startOfDay
+            }
+          },
+          distinct: true,
+          col: 'ip'
+        });
+        
+        console.log(`Statistiques visiteurs: Aujourd'hui=${stats.visitorsToday}, Semaine=${stats.visitorsThisWeek}, Total=${stats.totalVisitors}`);
       }
-    } catch (e) { console.log('Visitor non disponible'); }
+    } catch (e) { 
+      console.log('Visitor non disponible:', e.message); 
+    }
 
     res.render('admin/dashboard', {
       title: 'Tableau de bord',
