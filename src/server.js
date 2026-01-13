@@ -286,6 +286,135 @@ try {
     }
   });
   
+  app.get('/admin/stats', async (req, res) => {
+    if (!req.session?.user) return res.redirect('/admin/login');
+    
+    try {
+      const { Visitor } = require('./models/index');
+      const { Op } = require('sequelize');
+      
+      const today = new Date();
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const startOfWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      
+      const stats = {
+        visitorsToday: await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfDay } }
+        }),
+        visitorsThisWeek: await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfWeek } }
+        }),
+        visitorsThisMonth: await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfMonth } }
+        }),
+        totalVisitors: await Visitor.count(),
+        uniqueVisitorsToday: await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfDay } },
+          distinct: true,
+          col: 'ip'
+        })
+      };
+      
+      // Pages les plus visitées
+      const topPages = await Visitor.findAll({
+        attributes: [
+          'page',
+          [require('sequelize').fn('COUNT', require('sequelize').col('page')), 'visits']
+        ],
+        group: ['page'],
+        order: [[require('sequelize').fn('COUNT', require('sequelize').col('page')), 'DESC']],
+        limit: 10
+      });
+      
+      res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Statistiques - ENNO Admin</title>
+          <meta charset="utf-8">
+          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+          <div class="container mt-4">
+            <h1>📊 Statistiques Détaillées</h1>
+            <a href="/admin" class="btn btn-secondary mb-4">← Retour Dashboard</a>
+            
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h2 class="text-primary">${stats.visitorsToday}</h2>
+                    <p>Visiteurs aujourd'hui</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h2 class="text-success">${stats.visitorsThisWeek}</h2>
+                    <p>Visiteurs cette semaine</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h2 class="text-warning">${stats.visitorsThisMonth}</h2>
+                    <p>Visiteurs ce mois</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h2 class="text-info">${stats.totalVisitors}</h2>
+                    <p>Total visiteurs</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mt-4">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h5>Pages les plus visitées</h5>
+                  </div>
+                  <div class="card-body">
+                    ${topPages.map(page => `
+                      <div class="d-flex justify-content-between">
+                        <span>${page.page}</span>
+                        <span class="badge bg-primary">${page.dataValues.visits}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h5>Visiteurs uniques aujourd'hui</h5>
+                  </div>
+                  <div class="card-body text-center">
+                    <h2 class="text-primary">${stats.uniqueVisitorsToday}</h2>
+                    <p>IP uniques</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `);
+    } catch (err) {
+      res.send(`<h1>Statistiques</h1><p>Erreur: ${err.message}</p><a href="/admin">Retour</a>`);
+    }
+  });) {
+      res.send(`<h1>Gestion Services</h1><p>Erreur: ${err.message}</p><a href="/admin">Retour</a>`);
+    }
+  });
+  
   app.get('/admin/contents/apropos', async (req, res) => {
     if (!req.session?.user) return res.redirect('/admin/login');
     
