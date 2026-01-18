@@ -75,9 +75,9 @@
             <div class="col-md-3 mb-4">
                 <div class="card text-center">
                     <div class="card-body">
-                        <i class="fas fa-calendar-alt fa-2x text-warning mb-2"></i>
-                        <h4 class="text-warning"><%= stats.visitorsThisMonth %></h4>
-                        <p class="text-muted">Ce mois</p>
+                        <i class="fas fa-envelope fa-2x text-warning mb-2"></i>
+                        <h4 class="text-warning"><%= typeof messagesCount !== 'undefined' ? messagesCount : 0 %></h4>
+                        <p class="text-muted">Messages reçus</p>
                     </div>
                 </div>
             </div>

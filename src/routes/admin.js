@@ -105,7 +105,7 @@ router.delete('/images/:filename', imageController.deleteImage);
 // -----------------
 // Statistiques
 // -----------------
-router.get('/stats', adminController.getStats);
+router.get('/stats', adminController.getStatsFixed);
 
 // Route pour générer des données de test
 router.post('/generate-test-data', async (req, res) => {

@@ -517,3 +517,115 @@ exports.getStats = async (req, res) => {
     });
   }
 };
+// Corriger la fonction getStats pour inclure messagesCount
+exports.getStatsFixed = async (req, res) => {
+  try {
+    let stats = {
+      visitorsToday: 0,
+      visitorsThisWeek: 0,
+      visitorsThisMonth: 0,
+      totalVisitors: 0,
+      uniqueVisitorsToday: 0,
+      topPages: []
+    };
+    
+    let messagesCount = 0;
+    let servicesCount = 0;
+    let projetsCount = 0;
+
+    try {
+      if (Visitor) {
+        const today = new Date();
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const startOfWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        
+        stats.visitorsToday = await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfDay } }
+        });
+        
+        stats.visitorsThisWeek = await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfWeek } }
+        });
+        
+        stats.visitorsThisMonth = await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfMonth } }
+        });
+        
+        stats.totalVisitors = await Visitor.count();
+        
+        stats.uniqueVisitorsToday = await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfDay } },
+          distinct: true,
+          col: 'ip'
+        });
+        
+        const { sequelize } = require('../models/index');
+        stats.topPages = await Visitor.findAll({
+          attributes: [
+            'page',
+            [sequelize.fn('COUNT', sequelize.col('page')), 'visits']
+          ],
+          group: ['page'],
+          order: [[sequelize.fn('COUNT', sequelize.col('page')), 'DESC']],
+          limit: 10
+        });
+      }
+    } catch (e) {
+      console.log('Erreur récupération stats visiteurs:', e.message);
+    }
+    
+    try {
+      if (ContactMessage) {
+        messagesCount = await ContactMessage.count();
+      }
+    } catch (e) {
+      console.log('Erreur messages count:', e.message);
+    }
+    
+    try {
+      if (Service) {
+        servicesCount = await Service.count();
+      }
+    } catch (e) {
+      console.log('Erreur services count:', e.message);
+    }
+    
+    try {
+      if (Projet) {
+        projetsCount = await Projet.count();
+      }
+    } catch (e) {
+      console.log('Erreur projets count:', e.message);
+    }
+
+    res.render('admin/stats', {
+      title: 'Statistiques détaillées',
+      admin: req.session.user,
+      stats,
+      messagesCount,
+      servicesCount,
+      projetsCount,
+      layout: false
+    });
+  } catch (error) {
+    console.error('Erreur getStats:', error);
+    res.render('admin/stats', {
+      title: 'Statistiques détaillées',
+      admin: req.session.user,
+      stats: {
+        visitorsToday: 0,
+        visitorsThisWeek: 0,
+        visitorsThisMonth: 0,
+        totalVisitors: 0,
+        uniqueVisitorsToday: 0,
+        topPages: []
+      },
+      messagesCount: 0,
+      servicesCount: 0,
+      projetsCount: 0,
+      error: 'Erreur lors du chargement des statistiques',
+      layout: false
+    });
+  }
+};
