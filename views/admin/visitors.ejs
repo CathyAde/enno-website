@@ -59,7 +59,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th><i class="fas fa-clock me-1"></i>Date/Heure</th>
-                                <th><i class="fas fa-globe me-1"></i>Adresse IP</th>
+                                <th><i class="fas fa-user me-1"></i>Visiteur</th>
                                 <th><i class="fas fa-file me-1"></i>Page visitée</th>
                                 <th><i class="fas fa-desktop me-1"></i>Appareil</th>
                                 <th><i class="fas fa-external-link-alt me-1"></i>Référent</th>
@@ -75,10 +75,19 @@
                                     </small>
                                 </td>
                                 <td>
+                                    <% if (visitor.name) { %>
+                                        <strong><%= visitor.name %></strong><br>
+                                    <% } %>
+                                    <% if (visitor.email) { %>
+                                        <small class="text-primary"><%= visitor.email %></small><br>
+                                    <% } %>
                                     <span class="ip-badge">
                                         <i class="fas fa-map-marker-alt me-1"></i>
                                         <%= visitor.ip %>
                                     </span>
+                                    <% if (visitor.location) { %>
+                                        <br><small class="text-success"><i class="fas fa-location-dot me-1"></i><%= visitor.location %></small>
+                                    <% } %>
                                 </td>
                                 <td>
                                     <span class="page-badge">

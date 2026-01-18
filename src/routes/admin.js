@@ -116,6 +116,9 @@ router.post('/generate-test-data', async (req, res) => {
     const testData = [];
     const pages = ['/', '/services', '/apropos', '/contact'];
     const ips = ['192.168.1.1', '10.0.0.1', '172.16.0.1', '203.0.113.1', '198.51.100.1'];
+    const names = ['Jean Dupont', 'Marie Martin', 'Pierre Durand', 'Sophie Bernard', 'Luc Moreau'];
+    const emails = ['jean@email.com', 'marie@gmail.com', 'pierre@yahoo.fr', 'sophie@outlook.com', 'luc@hotmail.fr'];
+    const locations = ['Brazzaville', 'Pointe-Noire', 'Dolisie', 'Nkayi', 'Ouesso'];
     const userAgents = [
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
@@ -134,6 +137,9 @@ router.post('/generate-test-data', async (req, res) => {
         page: pages[Math.floor(Math.random() * pages.length)],
         referer: Math.random() > 0.5 ? 'https://google.com' : null,
         sessionId: `test-session-${i}`,
+        name: names[Math.floor(Math.random() * names.length)],
+        email: emails[Math.floor(Math.random() * emails.length)],
+        location: locations[Math.floor(Math.random() * locations.length)],
         createdAt: visitDate,
         updatedAt: visitDate
       });
