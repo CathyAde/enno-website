@@ -33,12 +33,24 @@
             </div>
         </div>
 
+        <% if (stats.totalVisitors === 0) { %>
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            Aucune donnée de visite disponible. 
+            <form method="POST" action="/admin/generate-test-data" class="d-inline">
+                <button type="submit" class="btn btn-sm btn-primary ms-2">
+                    <i class="fas fa-plus me-1"></i>Générer des données de test
+                </button>
+            </form>
+        </div>
+        <% } %>
+
         <div class="row mt-4">
             <div class="col-md-3 mb-4">
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="fas fa-users fa-2x text-primary mb-2"></i>
-                        <h4 class="text-primary">0</h4>
+                        <h4 class="text-primary"><%= stats.visitorsToday %></h4>
                         <p class="text-muted">Visiteurs aujourd'hui</p>
                     </div>
                 </div>
@@ -46,46 +58,66 @@
             <div class="col-md-3 mb-4">
                 <div class="card text-center">
                     <div class="card-body">
-                        <i class="fas fa-eye fa-2x text-success mb-2"></i>
-                        <h4 class="text-success">0</h4>
-                        <p class="text-muted">Pages vues</p>
+                        <i class="fas fa-calendar-week fa-2x text-success mb-2"></i>
+                        <h4 class="text-success"><%= stats.visitorsThisWeek %></h4>
+                        <p class="text-muted">Cette semaine</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 mb-4">
                 <div class="card text-center">
                     <div class="card-body">
-                        <i class="fas fa-envelope fa-2x text-warning mb-2"></i>
-                        <h4 class="text-warning">0</h4>
-                        <p class="text-muted">Messages reçus</p>
+                        <i class="fas fa-calendar-alt fa-2x text-warning mb-2"></i>
+                        <h4 class="text-warning"><%= stats.visitorsThisMonth %></h4>
+                        <p class="text-muted">Ce mois</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 mb-4">
                 <div class="card text-center">
                     <div class="card-body">
-                        <i class="fas fa-project-diagram fa-2x text-info mb-2"></i>
-                        <h4 class="text-info">0</h4>
-                        <p class="text-muted">Projets ajoutés</p>
+                        <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
+                        <h4 class="text-info"><%= stats.totalVisitors %></h4>
+                        <p class="text-muted">Total visiteurs</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-12">
+            <div class="col-md-6 mb-4">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Fonctionnalité en développement</h5>
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Pages les plus visitées</h5>
                     </div>
-                    <div class="card-body text-center py-5">
-                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-                        <h5>Statistiques avancées</h5>
-                        <p class="text-muted">Les statistiques détaillées seront bientôt disponibles</p>
-                        <a href="/admin" class="btn btn-primary">
-                            <i class="fas fa-arrow-left me-1"></i>
-                            Retour au dashboard
-                        </a>
+                    <div class="card-body">
+                        <% if (stats.topPages && stats.topPages.length > 0) { %>
+                            <% stats.topPages.forEach(page => { %>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span><%= page.page %></span>
+                                    <span class="badge bg-primary"><%= page.dataValues.visits %> visites</span>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p class="text-muted text-center">Aucune donnée disponible</p>
+                        <% } %>
+                        <div class="text-center mt-3">
+                            <a href="/admin/visitors" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye me-1"></i>Voir détails
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-user-friends me-2"></i>Visiteurs uniques</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <h3 class="text-primary"><%= stats.uniqueVisitorsToday %></h3>
+                        <p class="text-muted">Visiteurs uniques aujourd'hui</p>
                     </div>
                 </div>
             </div>

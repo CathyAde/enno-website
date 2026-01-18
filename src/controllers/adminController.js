@@ -438,3 +438,82 @@ exports.logout = (req, res) => {
     res.redirect('/admin/login');
   });
 };
+// Statistiques détaillées (GET)
+exports.getStats = async (req, res) => {
+  try {
+    let stats = {
+      visitorsToday: 0,
+      visitorsThisWeek: 0,
+      visitorsThisMonth: 0,
+      totalVisitors: 0,
+      uniqueVisitorsToday: 0,
+      topPages: []
+    };
+
+    try {
+      if (Visitor) {
+        const today = new Date();
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const startOfWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        
+        stats.visitorsToday = await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfDay } }
+        });
+        
+        stats.visitorsThisWeek = await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfWeek } }
+        });
+        
+        stats.visitorsThisMonth = await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfMonth } }
+        });
+        
+        stats.totalVisitors = await Visitor.count();
+        
+        stats.uniqueVisitorsToday = await Visitor.count({
+          where: { createdAt: { [Op.gte]: startOfDay } },
+          distinct: true,
+          col: 'ip'
+        });
+        
+        // Pages les plus visitées
+        const { sequelize } = require('../models/index');
+        stats.topPages = await Visitor.findAll({
+          attributes: [
+            'page',
+            [sequelize.fn('COUNT', sequelize.col('page')), 'visits']
+          ],
+          group: ['page'],
+          order: [[sequelize.fn('COUNT', sequelize.col('page')), 'DESC']],
+          limit: 10
+        });
+      }
+    } catch (e) {
+      console.log('Erreur récupération stats:', e.message);
+    }
+
+    res.render('admin/stats', {
+      title: 'Statistiques détaillées',
+      admin: req.session.user,
+      stats,
+      layout: false
+    });
+  } catch (error) {
+    console.error('Erreur getStats:', error);
+    res.render('admin/stats', {
+      title: 'Statistiques détaillées',
+      admin: req.session.user,
+      stats: {
+        visitorsToday: 0,
+        visitorsThisWeek: 0,
+        visitorsThisMonth: 0,
+        totalVisitors: 0,
+        uniqueVisitorsToday: 0,
+        topPages: []
+      },
+      error: 'Erreur lors du chargement des statistiques',
+      layout: false
+    });
+  }
+};
