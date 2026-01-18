@@ -155,6 +155,33 @@ router.post('/generate-test-data', async (req, res) => {
   }
 });
 
+// Route pour remettre tous les compteurs à zéro
+router.post('/reset-all-data', async (req, res) => {
+  try {
+    const { Visitor, ContactMessage } = require('../models/index');
+    
+    // Supprimer tous les visiteurs
+    if (Visitor) {
+      await Visitor.destroy({ where: {} });
+    }
+    
+    // Supprimer tous les messages (sauf celui de bienvenue)
+    if (ContactMessage) {
+      await ContactMessage.destroy({ 
+        where: {
+          subject: { [require('sequelize').Op.ne]: 'Bienvenue sur ENNO Admin' }
+        }
+      });
+    }
+    
+    req.flash('success', 'Tous les compteurs ont été remis à zéro!');
+    res.redirect('/admin/stats');
+  } catch (error) {
+    req.flash('error', 'Erreur lors de la remise à zéro: ' + error.message);
+    res.redirect('/admin/stats');
+  }
+});
+
 // Route pour voir les détails des visiteurs
 router.get('/visitors', async (req, res) => {
   try {
